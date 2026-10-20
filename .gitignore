@@ -7,6 +7,7 @@ build/
 local.properties
 
 # Log/OS Files
+.DS_Store
 *.log
 
 # Android Studio generated files and folders
@@ -33,3 +34,14 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# LaTeX build artifacts
+*.aux
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.xdv
