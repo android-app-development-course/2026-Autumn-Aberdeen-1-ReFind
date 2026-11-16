@@ -99,6 +99,12 @@ fun ReFindApp(modifier: Modifier = Modifier) {
     val detailItem = lostReports.firstOrNull { it.id == detailItemId }
         ?: DemoData.foundItems.firstOrNull { it.id == detailItemId }
 
+    // Navigation intent: MatchFound is a one-shot decision gate — once the
+    // user picks a side, backing out should land on where they came from,
+    // never on the match screen again.
+    var matchOrigin by remember { mutableStateOf(Screen.Feed) }
+    var chatOrigin by remember { mutableStateOf(Screen.Feed) }
+
     val matchedLost = remember {
         DemoData.lostItems.first { it.id == DemoData.MATCHED_LOST_ID }
     }
@@ -157,7 +163,10 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                         lostItems = lostReports,
                         foundItems = DemoData.foundItems,
                         matchConfidencePercent = (DemoData.MATCH_CONFIDENCE * 100).toInt(),
-                        onMatchClick = { screen = Screen.MatchFound },
+                        onMatchClick = {
+                            matchOrigin = Screen.Feed
+                            screen = Screen.MatchFound
+                        },
                         onItemClick = {
                             detailItemId = it.id
                             screen = Screen.ItemDetail
@@ -190,8 +199,14 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                         item = item,
                         hasMatch = item.id == DemoData.MATCHED_LOST_ID,
                         onBack = { screen = Screen.Feed },
-                        onMatchClick = { screen = Screen.MatchFound },
-                        onChatClick = { screen = Screen.Chat },
+                        onMatchClick = {
+                            matchOrigin = Screen.ItemDetail
+                            screen = Screen.MatchFound
+                        },
+                        onChatClick = {
+                            chatOrigin = Screen.ItemDetail
+                            screen = Screen.Chat
+                        },
                     )
                 } ?: FeedScreen(
                     userName = DemoData.USER_NAME,
@@ -206,13 +221,17 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     lostItem = matchedLost,
                     foundItem = matchedFound,
                     confidence = DemoData.MATCH_CONFIDENCE,
-                    onChat = { screen = Screen.Chat },
-                    onBack = { screen = Screen.Feed },
+                    onChat = {
+                        // The gate is passed: back from chat skips MatchFound.
+                        chatOrigin = matchOrigin
+                        screen = Screen.Chat
+                    },
+                    onBack = { screen = matchOrigin },
                 )
 
                 Screen.Chat -> ChatScreen(
                     initialMessages = DemoData.chatMessages,
-                    onBack = { screen = Screen.MatchFound },
+                    onBack = { screen = chatOrigin },
                 )
             }
         }
