@@ -160,6 +160,7 @@ fun ChatScreen(
                     else -> TheirBubble(message, index)
                 }
             }
+
         }
 
         // Composer
@@ -242,6 +243,7 @@ private fun MyBubble(message: ChatMessage, index: Int) {
             text = message.text,
             container = MaterialTheme.colorScheme.primary,
             content = MaterialTheme.colorScheme.onPrimary,
+            time = message.time,
             modifier = Modifier.widthIn(max = 280.dp),
         )
     }
@@ -249,7 +251,7 @@ private fun MyBubble(message: ChatMessage, index: Int) {
 
 @Composable
 private fun TheirBubble(message: ChatMessage, index: Int) {
-    val isVerification = message.text.startsWith("🔒")
+    val isVerification = message.text.startsWith("Verification question")
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -269,16 +271,22 @@ private fun TheirBubble(message: ChatMessage, index: Int) {
             } else {
                 null
             },
+            time = message.time,
             modifier = Modifier.widthIn(max = 280.dp),
         )
     }
 }
 
+/**
+ * WhatsApp-style bubble: the send time sits as small muted text pinned to
+ * the bottom-right of the bubble, next to the last line of the message.
+ */
 @Composable
 private fun Bubble(
     text: String,
     container: androidx.compose.ui.graphics.Color,
     content: androidx.compose.ui.graphics.Color,
+    time: String? = null,
     modifier: Modifier = Modifier,
     leadingIcon: (@Composable () -> Unit)? = null,
 ) {
@@ -287,14 +295,26 @@ private fun Bubble(
         shape = RoundedCornerShape(20.dp),
         modifier = modifier,
     ) {
-        Row(Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
-            leadingIcon?.invoke()
-            leadingIcon?.let { Spacer(Modifier.width(8.dp)) }
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                color = content,
-            )
+        Column(Modifier.padding(horizontal = 14.dp, vertical = 8.dp)) {
+            Row(verticalAlignment = Alignment.Top) {
+                leadingIcon?.invoke()
+                leadingIcon?.let { Spacer(Modifier.width(8.dp)) }
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = content,
+                )
+            }
+            time?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = content.copy(alpha = 0.6f),
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(top = 2.dp),
+                )
+            }
         }
     }
 }
