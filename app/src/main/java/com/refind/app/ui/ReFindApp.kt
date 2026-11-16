@@ -1,6 +1,9 @@
 package com.refind.app.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -8,7 +11,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +35,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,6 +46,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.refind.app.data.DemoData
@@ -57,15 +60,18 @@ import com.refind.app.ui.screens.MatchFoundScreen
 import com.refind.app.ui.screens.ProfileScreen
 import com.refind.app.ui.screens.ReportScreen
 
-/** Every destination of the prototype. */
-sealed interface Screen {
-    data object Login : Screen
-    data object Feed : Screen
-    data object Profile : Screen
-    data object Report : Screen
-    data object ItemDetail : Screen
-    data object MatchFound : Screen
-    data object Chat : Screen
+/**
+ * Every destination of the prototype. An enum so the current screen
+ * survives configuration changes (rotation) via rememberSaveable.
+ */
+enum class Screen {
+    Login,
+    Feed,
+    Profile,
+    Report,
+    ItemDetail,
+    MatchFound,
+    Chat,
 }
 
 /** Stack depth drives the direction of the push/pop transitions. */
@@ -84,11 +90,14 @@ private fun depthOf(screen: Screen): Int = when (screen) {
  */
 @Composable
 fun ReFindApp(modifier: Modifier = Modifier) {
-    var screen by remember { mutableStateOf<Screen>(Screen.Login) }
+    var screen by rememberSaveable { mutableStateOf(Screen.Login) }
     var lostReports by remember {
         mutableStateOf(DemoData.lostItems)
     }
-    var detailItem by remember { mutableStateOf<ItemReport?>(null) }
+    // Only the id is saved: reports are value objects looked up from the lists.
+    var detailItemId by rememberSaveable { mutableStateOf<Int?>(null) }
+    val detailItem = lostReports.firstOrNull { it.id == detailItemId }
+        ?: DemoData.foundItems.firstOrNull { it.id == detailItemId }
 
     val matchedLost = remember {
         DemoData.lostItems.first { it.id == DemoData.MATCHED_LOST_ID }
@@ -150,7 +159,7 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                         matchConfidencePercent = (DemoData.MATCH_CONFIDENCE * 100).toInt(),
                         onMatchClick = { screen = Screen.MatchFound },
                         onItemClick = {
-                            detailItem = it
+                            detailItemId = it.id
                             screen = Screen.ItemDetail
                         },
                     )
@@ -162,7 +171,10 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     onProfile = { screen = Screen.Profile },
                     onReport = { screen = Screen.Report },
                 ) {
-                    ProfileScreen(myReports = lostReports)
+                    ProfileScreen(
+                        myReports = lostReports,
+                        onSignOut = { screen = Screen.Login },
+                    )
                 }
 
                 Screen.Report -> ReportScreen(
@@ -226,14 +238,22 @@ private fun MainShell(
                 onProfile = onProfile,
             )
         }
+        // Raised report button with a soft white halo, floating over the bar.
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .offset(y = (-39).dp)
-                .shadow(10.dp, CircleShape)
-                .size(58.dp)
+                .offset(y = (-46).dp)
+                .shadow(12.dp, CircleShape)
+                .size(66.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary)
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(5.dp)
+                .clip(CircleShape)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.primary),
+                    ),
+                )
                 .clickable(onClick = onReport),
             contentAlignment = Alignment.Center,
         ) {
@@ -253,12 +273,25 @@ private fun BottomBar(
     onHome: () -> Unit,
     onProfile: () -> Unit,
 ) {
-    Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 6.dp) {
+    // The bar blends into the page: same background colour, hairline on top,
+    // selection marked by an animated underline instead of a filled pill.
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(68.dp)
-                .padding(horizontal = 36.dp),
+                .height(74.dp)
+                .padding(horizontal = 52.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             NavItem(
@@ -291,15 +324,22 @@ private fun NavItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val tint = if (selected) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
+    val tint by animateColorAsState(
+        targetValue = if (selected) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        },
+        label = "navTint",
+    )
+    val underlineAlpha by animateFloatAsState(
+        targetValue = if (selected) 1f else 0f,
+        animationSpec = tween(220),
+        label = "navUnderline",
+    )
     Column(
         modifier = modifier.clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Icon(
             if (selected) activeIcon else icon,
@@ -307,10 +347,21 @@ private fun NavItem(
             tint = tint,
             modifier = Modifier.size(24.dp),
         )
+        Spacer(Modifier.height(3.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
             color = tint,
+        )
+        Spacer(Modifier.height(5.dp))
+        // Short animated underline: the selection marker.
+        Box(
+            modifier = Modifier
+                .width(30.dp)
+                .height(3.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .graphicsLayer { alpha = underlineAlpha }
+                .background(MaterialTheme.colorScheme.primary),
         )
     }
 }

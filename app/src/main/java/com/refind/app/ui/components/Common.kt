@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Bolt
@@ -186,7 +187,10 @@ fun ItemCard(
                 )
             }
             Spacer(Modifier.width(14.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(
+                Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     StatusBadge(item.status)
                     if (item.reward != null) {
@@ -231,6 +235,13 @@ fun ItemCard(
                     )
                 }
             }
+            Spacer(Modifier.width(4.dp))
+            Icon(
+                Icons.Outlined.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp),
+            )
         }
     }
 }
@@ -281,7 +292,9 @@ fun MatchBanner(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Brush.linearGradient(listOf(Teal700, Teal500)))
+                .background(
+                    Brush.linearGradient(listOf(Teal700, Color(0xFF2FA7AD))),
+                )
                 .padding(18.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -292,7 +305,7 @@ fun MatchBanner(
                 modifier = Modifier.size(30.dp),
             )
             Spacer(Modifier.width(14.dp))
-            Column {
+            Column(Modifier.weight(1f)) {
                 Text(
                     text = "AI match found!",
                     style = MaterialTheme.typography.titleMedium,
@@ -304,6 +317,12 @@ fun MatchBanner(
                     color = Color.White.copy(alpha = 0.85f),
                 )
             }
+            Icon(
+                Icons.Outlined.ChevronRight,
+                contentDescription = null,
+                tint = Color.White.copy(alpha = 0.9f),
+                modifier = Modifier.size(24.dp),
+            )
         }
     }
 }

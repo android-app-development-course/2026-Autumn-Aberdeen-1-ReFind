@@ -20,7 +20,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.ChevronRight
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
@@ -53,9 +56,12 @@ import kotlin.math.roundToInt
 @Composable
 fun ProfileScreen(
     myReports: List<ItemReport>,
+    onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var notificationsOn by remember { mutableStateOf(true) }
+    var showSignOutDialog by remember { mutableStateOf(false) }
+    var showAboutDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -158,6 +164,25 @@ fun ProfileScreen(
             SettingsRow(
                 icon = { Icon(Icons.Outlined.Info, contentDescription = null, tint = Teal700) },
                 title = "About ReFind",
+                onClick = { showAboutDialog = true },
+            ) {
+                Icon(
+                    Icons.Outlined.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            SettingsRow(
+                icon = {
+                    Icon(
+                        Icons.AutoMirrored.Outlined.Logout,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                },
+                title = "Sign out",
+                titleColor = MaterialTheme.colorScheme.error,
+                onClick = { showSignOutDialog = true },
             ) {
                 Icon(
                     Icons.Outlined.ChevronRight,
@@ -167,9 +192,55 @@ fun ProfileScreen(
             }
         }
 
+        if (showAboutDialog) {
+            AlertDialog(
+                onDismissRequest = { showAboutDialog = false },
+                title = { Text("ReFind") },
+                text = {
+                    Text(
+                        "Version 0.1.0-alpha.1\n\n" +
+                            "From lost to found — automatically. ReFind pairs lost and found " +
+                            "reports with image matching, then verifies every claim through " +
+                            "a private question.\n\n" +
+                            "Team: Heng Liu · Honghui Zhang · Yuchen Huang",
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = { showAboutDialog = false }) {
+                        Text("Close")
+                    }
+                },
+            )
+        }
+
+        if (showSignOutDialog) {
+            AlertDialog(
+                onDismissRequest = { showSignOutDialog = false },
+                title = { Text("Sign out?") },
+                text = {
+                    Text("Your demo reports live only in memory and will disappear. You can sign back in at any time.")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showSignOutDialog = false
+                            onSignOut()
+                        },
+                    ) {
+                        Text("Sign out", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showSignOutDialog = false }) {
+                        Text("Cancel")
+                    }
+                },
+            )
+        }
+
         Spacer(Modifier.height(30.dp))
         Text(
-            text = "ReFind Phase 2 · UI prototype",
+            text = "ReFind v0.1.0-alpha.1",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -220,9 +291,12 @@ private fun StatCard(
 private fun SettingsRow(
     icon: @Composable () -> Unit,
     title: String,
+    titleColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
+    onClick: () -> Unit = {},
     trailing: @Composable () -> Unit,
 ) {
     Card(
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -239,7 +313,7 @@ private fun SettingsRow(
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = titleColor,
                 modifier = Modifier.weight(1f),
             )
             trailing()
