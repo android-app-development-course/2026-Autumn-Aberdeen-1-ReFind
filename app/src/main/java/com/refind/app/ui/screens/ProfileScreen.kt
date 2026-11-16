@@ -3,6 +3,7 @@ package com.refind.app.ui.screens
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -47,10 +48,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.refind.app.R
 import com.refind.app.data.DemoData
 import com.refind.app.data.ItemStatus
 import com.refind.app.data.ItemReport
@@ -77,36 +82,44 @@ fun ProfileScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
     ) {
-        // Identity header
+        // Identity header: banner image with a teal scrim blending into the page
         Box {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            listOf(Teal700, MaterialTheme.colorScheme.primary),
+                    .height(200.dp),
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.img_profile_banner),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                // Teal wash keeps the brand readable and blends into the page below.
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(Teal700.copy(alpha = 0.55f), Teal700.copy(alpha = 0.35f)),
+                            ),
                         ),
-                    ),
-            )
+                )
+            }
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(Modifier.height(60.dp))
-                Box(
+                Spacer(Modifier.height(122.dp))
+                Image(
+                    painter = painterResource(R.drawable.avatar_default),
+                    contentDescription = "Avatar",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(84.dp)
                         .clip(CircleShape)
-                        .background(Teal100),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = DemoData.USER_NAME.take(1),
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Teal700,
-                    )
-                }
+                        .shadow(6.dp, CircleShape),
+                )
                 Spacer(Modifier.height(10.dp))
                 Text(
                     text = "${DemoData.USER_NAME} Chen",
