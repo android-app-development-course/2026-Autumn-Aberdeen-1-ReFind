@@ -87,7 +87,7 @@ fun LoginScreen(
                 .height(340.dp)
                 .background(
                     Brush.verticalGradient(
-                        listOf(MaterialTheme.colorScheme.primary, Color(0xFF3B82F6)),
+                        listOf(MaterialTheme.colorScheme.primary, Color(0xFF5C9CF8)),
                     ),
                 ),
         ) {

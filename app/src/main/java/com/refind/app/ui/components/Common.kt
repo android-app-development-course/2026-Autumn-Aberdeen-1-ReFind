@@ -158,7 +158,7 @@ fun ItemCard(
         colors = if (item.status == ItemStatus.LOST) {
             listOf(Color(0xFFFFE9D6), Color(0xFFFFD6AE))
         } else {
-            listOf(Color(0xFFDBEAFE), Color(0xFFBFDBFE))
+            listOf(Color(0xFFE0EDFD), Color(0xFFCBDFFB))
         },
     )
     val heroTint = if (item.status == ItemStatus.LOST) LostOrange else Blue600
@@ -324,7 +324,7 @@ fun NewReportBanner(
                 .fillMaxWidth()
                 .background(
                     Brush.linearGradient(
-                        listOf(Blue600, Color(0xFF3B82F6)),
+                        listOf(Blue600, Color(0xFF60A5FA)),
                         start = androidx.compose.ui.geometry.Offset(0f, 0f),
                         end = androidx.compose.ui.geometry.Offset(
                             Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
