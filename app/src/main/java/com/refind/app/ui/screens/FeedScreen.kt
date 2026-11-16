@@ -39,6 +39,7 @@ import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
 import com.refind.app.ui.components.ItemCard
 import com.refind.app.ui.components.MatchBanner
+import com.refind.app.ui.components.StatusTabs
 import com.refind.app.ui.components.staggerIn
 
 /**
@@ -132,7 +133,7 @@ fun FeedScreen(
         }
         item(key = "tabs") {
             Spacer(Modifier.height(4.dp))
-            SegmentedTabs(
+            StatusTabs(
                 selected = selectedTab,
                 lostCount = lostItems.size,
                 foundCount = foundItems.size,
@@ -151,7 +152,7 @@ fun FeedScreen(
     }
 }
 
-/** Lost/Found switch with an animated pill for the selected side. */
+/** Lost/Found switch shared with the My Reports screen. */
 @Composable
 private fun SegmentedTabs(
     selected: ItemStatus,
@@ -159,73 +160,10 @@ private fun SegmentedTabs(
     foundCount: Int,
     onSelect: (ItemStatus) -> Unit,
     modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(4.dp),
-    ) {
-        listOf(
-            ItemStatus.LOST to "Lost ($lostCount)",
-            ItemStatus.FOUND to "Found ($foundCount)",
-        ).forEach { (status, label) ->
-            val isSelected = selected == status
-            val bg by animateColorAsState(
-                targetValue = if (isSelected) {
-                    MaterialTheme.colorScheme.surface
-                } else {
-                    Color.Transparent
-                },
-                label = "tabBg",
-            )
-            val fg by animateColorAsState(
-                targetValue = if (isSelected) {
-                    MaterialTheme.colorScheme.onSurface
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
-                label = "tabFg",
-            )
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(bg)
-                    .then(
-                        if (isSelected) {
-                            Modifier.border(
-                                width = 1.5.dp,
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.45f),
-                                shape = RoundedCornerShape(14.dp),
-                            )
-                        } else {
-                            Modifier
-                        },
-                    )
-                    .clickable { onSelect(status) }
-                    .padding(vertical = 10.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (isSelected) {
-                    Box(
-                        modifier = Modifier
-                            .size(7.dp)
-                            .clip(CircleShape)
-                            .background(
-                                if (status == ItemStatus.LOST) {
-                                    com.refind.app.ui.theme.LostOrange
-                                } else {
-                                    com.refind.app.ui.theme.Teal700
-                                },
-                            ),
-                    )
-                    Spacer(Modifier.width(8.dp))
-                }
-                Text(text = label, style = MaterialTheme.typography.labelLarge, color = fg)
-            }
-        }
-    }
-}
+) = StatusTabs(
+    selected = selected,
+    lostCount = lostCount,
+    foundCount = foundCount,
+    onSelect = onSelect,
+    modifier = modifier,
+)

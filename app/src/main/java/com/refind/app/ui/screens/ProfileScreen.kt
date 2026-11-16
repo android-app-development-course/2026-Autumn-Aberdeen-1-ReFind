@@ -4,6 +4,9 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +35,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,20 +48,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.refind.app.data.DemoData
+import com.refind.app.data.ItemStatus
 import com.refind.app.data.ItemReport
-import com.refind.app.ui.components.ItemCard
+import com.refind.app.ui.components.categoryIcon
 import com.refind.app.ui.theme.Teal100
 import com.refind.app.ui.theme.Teal700
 import com.refind.app.ui.theme.Teal900
 import kotlin.math.roundToInt
 
-/** Profile tab: identity, animated stats, the user's own reports, settings. */
+/** Profile tab: identity, animated stats, stacked report preview, settings. */
 @Composable
 fun ProfileScreen(
     myReports: List<ItemReport>,
+    onOpenReports: () -> Unit,
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -134,14 +143,13 @@ fun ProfileScreen(
             modifier = Modifier.padding(horizontal = 24.dp),
         )
         Spacer(Modifier.height(10.dp))
-        Column(
-            modifier = Modifier.padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            myReports.forEachIndexed { index, item ->
-                ItemCard(item = item, onClick = {}, index = index)
-            }
-        }
+        StackedReportsPreview(
+            latest = myReports.firstOrNull(),
+            totalCount = myReports.size,
+            lostCount = myReports.count { it.status == ItemStatus.LOST },
+            foundCount = myReports.count { it.status == ItemStatus.FOUND },
+            onClick = onOpenReports,
+        )
 
         Spacer(Modifier.height(22.dp))
         Text(
@@ -252,8 +260,7 @@ fun ProfileScreen(
 
 /** Number counts up from zero when the screen opens. */
 @Composable
-private fun StatCard(
-    value: Int,
+private fun StatCard(    value: Int,
     label: String,
     modifier: Modifier = Modifier,
 ) {
@@ -317,6 +324,142 @@ private fun SettingsRow(
                 modifier = Modifier.weight(1f),
             )
             trailing()
+        }
+    }
+}
+
+/**
+ * Stacked-card preview of the user's reports: two peeking edges hint at the
+ * pile, the top card summarises the latest report; tapping opens the full
+ * My Reports screen. Scales down slightly while pressed.
+ */
+@Composable
+private fun StackedReportsPreview(
+    latest: ItemReport?,
+    totalCount: Int,
+    lostCount: Int,
+    foundCount: Int,
+    onClick: () -> Unit,
+) {
+    val interaction = remember { MutableInteractionSource() }
+    val scale by animateFloatAsState(
+        targetValue = if (interaction.collectIsPressedAsState().value) 0.98f else 1f,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "stackPress",
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .clip(RoundedCornerShape(20.dp))
+            .clickable(interactionSource = interaction, indication = null, onClick = onClick),
+    ) {
+        // Peek edges of the pile behind the top card.
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 26.dp),
+        ) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(12.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)),
+            )
+        }
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 13.dp),
+        ) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(12.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f)),
+            )
+        }
+
+        Card(
+            onClick = onClick,
+            interactionSource = interaction,
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            Brush.linearGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    MaterialTheme.colorScheme.secondaryContainer,
+                                ),
+                            ),
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    latest?.let {
+                        Icon(
+                            categoryIcon(it.category),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(30.dp),
+                        )
+                    }
+                }
+                Spacer(Modifier.width(14.dp))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "My Reports",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.primary)
+                                .padding(horizontal = 8.dp, vertical = 3.dp),
+                        ) {
+                            Text(
+                                text = totalCount.toString(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
+                    }
+                    latest?.let {
+                        Text(
+                            text = "Latest: ${it.title} · ${it.timeAgo}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        )
+                    }
+                    Text(
+                        text = "$lostCount lost · $foundCount found — tap to view all",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+                Icon(
+                    Icons.Outlined.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }

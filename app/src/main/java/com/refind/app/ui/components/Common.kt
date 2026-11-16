@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.outlined.LocalDrink
 import androidx.compose.material.icons.outlined.MenuBook
 import androidx.compose.material.icons.outlined.PhoneIphone
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.Redeem
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material3.Card
@@ -254,8 +256,7 @@ fun ItemCard(
 
 /** Small outlined "YOU" chip marking the viewer's own reports in the feed. */
 @Composable
-fun MineChip(modifier: Modifier = Modifier) {
-    Row(
+fun MineChip(modifier: Modifier = Modifier) {    Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .background(Color.Transparent)
@@ -285,10 +286,10 @@ fun RewardChip(amount: Int, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            Icons.Outlined.Bolt,
-            contentDescription = null,
+            Icons.Outlined.Redeem,
+            contentDescription = "Reward",
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(12.dp),
+            modifier = Modifier.size(13.dp),
         )
         Spacer(Modifier.width(4.dp))
         Text(
@@ -351,6 +352,79 @@ fun MatchBanner(
                 tint = Color.White.copy(alpha = 0.9f),
                 modifier = Modifier.size(24.dp),
             )
+        }
+    }
+}
+
+/** Lost/Found segmented switch with an animated pill for the selected side. */
+@Composable
+fun StatusTabs(
+    selected: ItemStatus,
+    lostCount: Int,
+    foundCount: Int,
+    onSelect: (ItemStatus) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(4.dp),
+    ) {
+        listOf(
+            ItemStatus.LOST to "Lost ($lostCount)",
+            ItemStatus.FOUND to "Found ($foundCount)",
+        ).forEach { (status, label) ->
+            val isSelected = selected == status
+            val bg by androidx.compose.animation.animateColorAsState(
+                targetValue = if (isSelected) {
+                    MaterialTheme.colorScheme.surface
+                } else {
+                    Color.Transparent
+                },
+                label = "statusTabBg",
+            )
+            val fg by androidx.compose.animation.animateColorAsState(
+                targetValue = if (isSelected) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                label = "statusTabFg",
+            )
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(bg)
+                    .then(
+                        if (isSelected) {
+                            Modifier.border(
+                                width = 1.5.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.45f),
+                                shape = RoundedCornerShape(14.dp),
+                            )
+                        } else {
+                            Modifier
+                        },
+                    )
+                    .clickable { onSelect(status) }
+                    .padding(vertical = 10.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .size(7.dp)
+                            .clip(CircleShape)
+                            .background(if (status == ItemStatus.LOST) LostOrange else Teal700),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                }
+                Text(text = label, style = MaterialTheme.typography.labelLarge, color = fg)
+            }
         }
     }
 }

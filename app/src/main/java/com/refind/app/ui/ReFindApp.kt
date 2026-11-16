@@ -57,6 +57,7 @@ import com.refind.app.ui.screens.FeedScreen
 import com.refind.app.ui.screens.ItemDetailScreen
 import com.refind.app.ui.screens.LoginScreen
 import com.refind.app.ui.screens.MatchFoundScreen
+import com.refind.app.ui.screens.MyReportsScreen
 import com.refind.app.ui.screens.ProfileScreen
 import com.refind.app.ui.screens.ReportScreen
 
@@ -72,13 +73,14 @@ enum class Screen {
     ItemDetail,
     MatchFound,
     Chat,
+    MyReports,
 }
 
 /** Stack depth drives the direction of the push/pop transitions. */
 private fun depthOf(screen: Screen): Int = when (screen) {
     Screen.Login -> 0
     Screen.Feed, Screen.Profile -> 1
-    Screen.Report -> 2
+    Screen.Report, Screen.MyReports -> 2
     Screen.ItemDetail -> 3
     Screen.MatchFound -> 4
     Screen.Chat -> 5
@@ -183,9 +185,20 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     ProfileScreen(
                         myReports = (lostReports + DemoData.foundItems)
                             .filter { it.reporter == DemoData.USER_NAME },
+                        onOpenReports = { screen = Screen.MyReports },
                         onSignOut = { screen = Screen.Login },
                     )
                 }
+
+                Screen.MyReports -> MyReportsScreen(
+                    myReports = (lostReports + DemoData.foundItems)
+                        .filter { it.reporter == DemoData.USER_NAME },
+                    onBack = { screen = Screen.Profile },
+                    onItemClick = {
+                        detailItemId = it.id
+                        screen = Screen.ItemDetail
+                    },
+                )
 
                 Screen.Report -> ReportScreen(
                     onSubmitted = { newItem ->
