@@ -53,10 +53,39 @@ matching plus an anti-fraud verification gate.
 
 ```text
 docs/
-  business-plan.tex   # Business plan source (LaTeX)
-  business-plan.pdf   # Compiled business plan
-app/                  # Android app (to be added)
+  business-plan.tex         # Business plan source (LaTeX)
+  business-plan.pdf         # Compiled business plan
+  presentation/             # Phase-2 slides, demo video, screenshots
+app/                        # Android app — Jetpack Compose UI prototype
 ```
+
+## Running the UI prototype (Phase 2)
+
+```bash
+ANDROID_HOME=$HOME/Library/Android/sdk ./gradlew :app:assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb shell am start -n com.refind.app/.MainActivity
+```
+
+The prototype is a single-Activity Compose app with a demo campus story:
+sign in → browse the Lost/Found feed → file a report through the 3-step
+wizard → see the AI match → verify through chat. All state is in-memory;
+every screen is built with Material 3 on the ReFind teal palette
+(`#0D7377`), light and dark.
+
+Motion design highlights (focus of the phase-2 demo video):
+
+- Direction-aware screen transitions (push slides right, pop slides left,
+  the report wizard slides up as a modal)
+- Staggered card entrance on the feed and profile lists
+- Report wizard: horizontal step sliding + growing progress bar + spring
+  check-mark reveal on submit
+- **Match Found sequence** — the two reports fly in from opposite sides,
+  link with a spring check badge, a confidence ring sweeps to 92%, and the
+  matching-factor chips (Category / Colour / Location / Time) pop in one
+  by one
+- Press-scale feedback on cards, animated segmented tabs, count-up stats
+  on the profile
 
 ## Building the Business Plan
 
