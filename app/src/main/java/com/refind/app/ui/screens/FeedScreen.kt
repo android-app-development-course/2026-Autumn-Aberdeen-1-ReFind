@@ -93,7 +93,9 @@ fun FeedScreen(
             MatchBanner(
                 confidencePercent = matchConfidencePercent,
                 onClick = onMatchClick,
-                modifier = Modifier.staggerIn(0),
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .staggerIn(0),
             )
         }
         item(key = "tabs") {
@@ -103,13 +105,16 @@ fun FeedScreen(
                 lostCount = lostItems.size,
                 foundCount = foundItems.size,
                 onSelect = { selectedTab = it },
-                modifier = Modifier.staggerIn(1),
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .staggerIn(1),
             )
         }
         itemsIndexed(items, key = { _, item -> "item-${item.id}" }) { index, item ->
             ItemCard(
                 item = item,
                 onClick = { onItemClick(item) },
+                modifier = Modifier.padding(horizontal = 20.dp),
                 index = index + 2,
                 isMine = item.reporter == userName,
             )
