@@ -2,6 +2,7 @@ package com.refind.app.ui.screens
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,8 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,10 +45,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import com.refind.app.R
 import com.refind.app.data.ChatMessage
+import com.refind.app.data.DemoData
+import com.refind.app.data.ItemReport
+import com.refind.app.ui.components.categoryIcon
 import com.refind.app.ui.components.staggerIn
 import com.refind.app.ui.theme.Teal100
 import com.refind.app.ui.theme.Teal700
@@ -55,6 +64,10 @@ import com.refind.app.ui.theme.Teal900
 @Composable
 fun ChatScreen(
     initialMessages: List<ChatMessage>,
+    item: ItemReport,
+    peerName: String,
+    peerSubtitle: String,
+    peerOnline: Boolean,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -85,61 +98,89 @@ fun ChatScreen(
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
-            Box(
+            Image(
+                painter = painterResource(R.drawable.avatar_default),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(42.dp)
-                    .clip(CircleShape)
-                    .background(Teal100),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = "A", style = MaterialTheme.typography.titleMedium, color = Teal700)
-            }
+                    .clip(CircleShape),
+            )
             Spacer(Modifier.width(12.dp))
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Amy",
+                        text = peerName,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
-                    Spacer(Modifier.width(6.dp))
-                    Box(
-                        modifier = Modifier
-                            .size(7.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary),
-                    )
+                    if (peerOnline) {
+                        Spacer(Modifier.width(6.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(7.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary),
+                        )
+                    }
                 }
                 Text(
-                    text = "Finder · Library Cafe",
+                    text = peerSubtitle,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
 
-        // Safe handover banner
-        Row(
+        // Context card: which item this chat is about + the handover plan.
+        Card(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .padding(horizontal = 14.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(14.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
         ) {
-            Icon(
-                Icons.Outlined.Star,
-                contentDescription = null,
-                tint = Teal700,
-                modifier = Modifier.size(16.dp),
-            )
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = "Safe handover point: Library Cafe, 3:00 PM",
-                style = MaterialTheme.typography.labelMedium,
-                color = Teal900,
-            )
+            Column(
+                Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        categoryIcon(item.category),
+                        contentDescription = null,
+                        tint = Teal700,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = "Chatting about: ${item.title} (your report)",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Teal900,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        text = "${(DemoData.MATCH_CONFIDENCE * 100).toInt()}%",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Teal700,
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Outlined.Star,
+                        contentDescription = null,
+                        tint = Teal700,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = "Safe handover point: Library Cafe, 3:00 PM",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Teal900,
+                    )
+                }
+            }
         }
 
         // Messages

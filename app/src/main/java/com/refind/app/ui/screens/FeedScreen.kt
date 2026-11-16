@@ -42,7 +42,7 @@ import com.refind.app.R
 import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
 import com.refind.app.ui.components.ItemCard
-import com.refind.app.ui.components.MatchBanner
+import com.refind.app.ui.components.NewReportBanner
 import com.refind.app.ui.components.StatusTabs
 import com.refind.app.ui.components.staggerIn
 import com.refind.app.ui.theme.Teal400
@@ -61,8 +61,7 @@ fun FeedScreen(
     userName: String,
     lostItems: List<ItemReport>,
     foundItems: List<ItemReport>,
-    matchConfidencePercent: Int,
-    onMatchClick: () -> Unit,
+    onNewReport: () -> Unit,
     onItemClick: (ItemReport) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -90,9 +89,8 @@ fun FeedScreen(
         item(key = "match-banner") {
             // Compensate for the part of the search card hanging over the band.
             Spacer(Modifier.height(38.dp))
-            MatchBanner(
-                confidencePercent = matchConfidencePercent,
-                onClick = onMatchClick,
+            NewReportBanner(
+                onClick = onNewReport,
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
                     .staggerIn(0),

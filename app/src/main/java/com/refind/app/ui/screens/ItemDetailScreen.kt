@@ -1,5 +1,6 @@
 package com.refind.app.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,8 +35,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
+import com.refind.app.R
 import com.refind.app.data.DemoData
 import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
@@ -120,19 +124,14 @@ fun ItemDetailScreen(
             )
             Spacer(Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
+                Image(
+                    painter = painterResource(R.drawable.avatar_default),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(34.dp)
-                        .clip(CircleShape)
-                        .background(Teal100),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = item.reporter.take(1),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Teal700,
-                    )
-                }
+                        .clip(CircleShape),
+                )
                 Spacer(Modifier.width(10.dp))
                 Column {
                     Text(

@@ -35,6 +35,7 @@ import androidx.compose.material.icons.outlined.LocalDrink
 import androidx.compose.material.icons.outlined.MenuBook
 import androidx.compose.material.icons.outlined.PhoneIphone
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.PostAdd
 import androidx.compose.material.icons.outlined.Redeem
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.ShoppingBag
@@ -301,10 +302,9 @@ fun RewardChip(amount: Int, modifier: Modifier = Modifier) {
     }
 }
 
-/** The gradient "AI match found" banner on top of the feed. */
+/** The gradient "post a report" banner on top of the feed. */
 @Composable
-fun MatchBanner(
-    confidencePercent: Int,
+fun NewReportBanner(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -337,31 +337,31 @@ fun MatchBanner(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-            Icon(
-                Icons.Outlined.AutoAwesome,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(30.dp),
-            )
-            Spacer(Modifier.width(14.dp))
-            Column(Modifier.weight(1f)) {
-                Text(
-                    text = "AI match found!",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
+                Icon(
+                    Icons.Outlined.PostAdd,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp),
                 )
-                Text(
-                    text = "Your lost bottle may have been found · $confidencePercent%",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White.copy(alpha = 0.85f),
+                Spacer(Modifier.width(14.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        text = "Report an item",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                    )
+                    Text(
+                        text = "Lost or found on campus? Post it in seconds.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(alpha = 0.85f),
+                    )
+                }
+                Icon(
+                    Icons.Outlined.ChevronRight,
+                    contentDescription = null,
+                    tint = Color.White.copy(alpha = 0.9f),
+                    modifier = Modifier.size(24.dp),
                 )
-            }
-            Icon(
-                Icons.Outlined.ChevronRight,
-                contentDescription = null,
-                tint = Color.White.copy(alpha = 0.9f),
-                modifier = Modifier.size(24.dp),
-            )
             }
         }
     }

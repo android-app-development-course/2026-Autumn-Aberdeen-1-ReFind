@@ -179,4 +179,50 @@ object DemoData {
             time = "09:46",
         ),
     )
+
+    /** Chat threads shown on the Messages inbox screen. */
+    val conversations = listOf(
+        Conversation(
+            id = 1,
+            peerName = "Amy",
+            peerRole = "Finder · Library Cafe",
+            peerOnline = true,
+            item = foundItems.first { it.id == MATCHED_FOUND_ID },
+            messages = chatMessages,
+            preview = "That's the one! Meet at the Library Cafe safe point at 3pm?",
+            time = "09:46",
+            unread = false,
+        ),
+        Conversation(
+            id = 2,
+            peerName = "ReFind Team",
+            peerRole = "Automated matching assistant",
+            peerOnline = false,
+            item = lostItems.first { it.id == 2 },
+            messages = listOf(
+                ChatMessage(
+                    id = 0,
+                    text = "Good news! Your lost wallet received a new potential match (87%). Review it from the home banner or the report page.",
+                    isMe = false,
+                    time = "08:30",
+                ),
+            ),
+            preview = "Good news! Your lost wallet received a new potential match…",
+            time = "08:30",
+            unread = true,
+        ),
+    )
 }
+
+/** A chat thread shown on the Messages inbox screen. */
+data class Conversation(
+    val id: Int,
+    val peerName: String,
+    val peerRole: String,
+    val peerOnline: Boolean,
+    val item: ItemReport?,
+    val messages: List<ChatMessage>,
+    val preview: String,
+    val time: String,
+    val unread: Boolean,
+)

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -79,18 +81,23 @@ fun LoginScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         // Brand hero
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(340.dp)
                 .background(
                     Brush.verticalGradient(
                         listOf(MaterialTheme.colorScheme.primary, Color(0xFF17999E)),
                     ),
-                )
-                .padding(top = 72.dp, bottom = 48.dp)
-                .graphicsLayer { alpha = heroAlpha.value },
-            horizontalAlignment = Alignment.CenterHorizontally,
+                ),
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 84.dp)
+                    .graphicsLayer { alpha = heroAlpha.value },
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
             Box(
                 modifier = Modifier
                     .size(84.dp)
@@ -121,23 +128,24 @@ fun LoginScreen(
                 color = Color.White.copy(alpha = 0.85f),
                 textAlign = TextAlign.Center,
             )
+            }
         }
 
-        // Floating form sheet, attached directly under the hero
+        // Floating form sheet: pulled up so its rounded top overlaps the
+        // hero gradient — the corners reveal the teal behind them.
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, fill = true)
+                .offset(y = (-36).dp)
                 .graphicsLayer {
                     translationY = 60f * cardOffset.value
                     alpha = 1f - cardOffset.value * 0.4f
                 }
-                .background(
-                    MaterialTheme.colorScheme.surface,
-                    RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-                )
-                .padding(horizontal = 24.dp, vertical = 32.dp)
-                .verticalScroll(rememberScrollState()),
+                .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp, vertical = 32.dp),
         ) {
             Text(
                 text = "Welcome back 👋",

@@ -28,9 +28,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
@@ -57,6 +59,7 @@ import com.refind.app.ui.screens.FeedScreen
 import com.refind.app.ui.screens.ItemDetailScreen
 import com.refind.app.ui.screens.LoginScreen
 import com.refind.app.ui.screens.MatchFoundScreen
+import com.refind.app.ui.screens.MessagesScreen
 import com.refind.app.ui.screens.MyReportsScreen
 import com.refind.app.ui.screens.ProfileScreen
 import com.refind.app.ui.screens.ReportScreen
@@ -68,6 +71,7 @@ import com.refind.app.ui.screens.ReportScreen
 enum class Screen {
     Login,
     Feed,
+    Messages,
     Profile,
     Report,
     ItemDetail,
@@ -79,7 +83,7 @@ enum class Screen {
 /** Stack depth drives the direction of the push/pop transitions. */
 private fun depthOf(screen: Screen): Int = when (screen) {
     Screen.Login -> 0
-    Screen.Feed, Screen.Profile -> 1
+    Screen.Feed, Screen.Messages, Screen.Profile -> 1
     Screen.Report, Screen.MyReports -> 2
     Screen.ItemDetail -> 3
     Screen.MatchFound -> 4
@@ -106,6 +110,16 @@ fun ReFindApp(modifier: Modifier = Modifier) {
     // never on the match screen again.
     var matchOrigin by remember { mutableStateOf(Screen.Feed) }
     var chatOrigin by remember { mutableStateOf(Screen.Feed) }
+    var activeConversation by remember {
+        mutableStateOf(DemoData.conversations.first())
+    }
+
+    // Opens a chat thread from anywhere; the back button returns to `origin`.
+    val openChat: (com.refind.app.data.Conversation, Screen) -> Unit = { conv, origin ->
+        activeConversation = conv
+        chatOrigin = origin
+        screen = Screen.Chat
+    }
 
     val matchedLost = remember {
         DemoData.lostItems.first { it.id == DemoData.MATCHED_LOST_ID }
@@ -157,18 +171,14 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                 Screen.Feed -> MainShell(
                     currentTab = target,
                     onHome = { screen = Screen.Feed },
+                    onMessages = { screen = Screen.Messages },
                     onProfile = { screen = Screen.Profile },
-                    onReport = { screen = Screen.Report },
                 ) {
                     FeedScreen(
                         userName = DemoData.USER_NAME,
                         lostItems = lostReports,
                         foundItems = DemoData.foundItems,
-                        matchConfidencePercent = (DemoData.MATCH_CONFIDENCE * 100).toInt(),
-                        onMatchClick = {
-                            matchOrigin = Screen.Feed
-                            screen = Screen.MatchFound
-                        },
+                        onNewReport = { screen = Screen.Report },
                         onItemClick = {
                             detailItemId = it.id
                             screen = Screen.ItemDetail
@@ -179,8 +189,8 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                 Screen.Profile -> MainShell(
                     currentTab = target,
                     onHome = { screen = Screen.Feed },
+                    onMessages = { screen = Screen.Messages },
                     onProfile = { screen = Screen.Profile },
-                    onReport = { screen = Screen.Report },
                 ) {
                     ProfileScreen(
                         myReports = (lostReports + DemoData.foundItems)
@@ -225,8 +235,7 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     userName = DemoData.USER_NAME,
                     lostItems = lostReports,
                     foundItems = DemoData.foundItems,
-                    matchConfidencePercent = (DemoData.MATCH_CONFIDENCE * 100).toInt(),
-                    onMatchClick = { screen = Screen.MatchFound },
+                    onNewReport = { screen = Screen.Report },
                     onItemClick = {},
                 )
 
@@ -236,67 +245,66 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     confidence = DemoData.MATCH_CONFIDENCE,
                     onChat = {
                         // The gate is passed: back from chat skips MatchFound.
-                        chatOrigin = matchOrigin
-                        screen = Screen.Chat
+                        openChat(DemoData.conversations.first(), matchOrigin)
                     },
                     onBack = { screen = matchOrigin },
                 )
 
-                Screen.Chat -> ChatScreen(
-                    initialMessages = DemoData.chatMessages,
-                    onBack = { screen = chatOrigin },
-                )
+                // Chats opened from the inbox stay inside the app shell so
+                // the user can hop tabs without backing out first.
+                Screen.Chat -> MainShell(
+                    currentTab = if (chatOrigin == Screen.Messages) {
+                        Screen.Messages
+                    } else {
+                        Screen.Feed
+                    },
+                    onHome = { screen = Screen.Feed },
+                    onMessages = { screen = Screen.Messages },
+                    onProfile = { screen = Screen.Profile },
+                ) {
+                    ChatScreen(
+                        initialMessages = activeConversation.messages,
+                        item = activeConversation.item ?: matchedLost,
+                        peerName = activeConversation.peerName,
+                        peerSubtitle = activeConversation.peerRole,
+                        peerOnline = activeConversation.peerOnline,
+                        onBack = { screen = chatOrigin },
+                    )
+                }
+
+                Screen.Messages -> MainShell(
+                    currentTab = target,
+                    onHome = { screen = Screen.Feed },
+                    onMessages = { screen = Screen.Messages },
+                    onProfile = { screen = Screen.Profile },
+                ) {
+                    MessagesScreen(
+                        conversations = DemoData.conversations,
+                        onOpenChat = { conv -> openChat(conv, Screen.Messages) },
+                    )
+                }
             }
         }
     }
 }
 
-/** Feed/Profile shell with the bottom bar and the raised report button. */
+/** Feed/Messages/Profile shell with the centered bottom bar. */
 @Composable
 private fun MainShell(
     currentTab: Screen,
     onHome: () -> Unit,
+    onMessages: () -> Unit,
     onProfile: () -> Unit,
-    onReport: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    // The report button lives above the shell (not inside the bar) so the
-    // Surface's clipping can't cut off the half that floats over the content.
-    Box(Modifier.fillMaxSize()) {
-        Column(Modifier.fillMaxSize()) {
-            Box(Modifier.weight(1f)) { content() }
-            BottomBar(
-                currentTab = currentTab,
-                onHome = onHome,
-                onProfile = onProfile,
-            )
-        }
-        // Raised report button with a soft white halo, floating over the bar.
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .offset(y = (-46).dp)
-                .shadow(12.dp, CircleShape)
-                .size(66.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(5.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.verticalGradient(
-                        listOf(MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.primary),
-                    ),
-                )
-                .clickable(onClick = onReport),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                Icons.Outlined.Add,
-                contentDescription = "New report",
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(28.dp),
-            )
-        }
+    Column(Modifier.fillMaxSize()) {
+        Box(Modifier.weight(1f)) { content() }
+        BottomBar(
+            currentTab = currentTab,
+            onHome = onHome,
+            onMessages = onMessages,
+            onProfile = onProfile,
+        )
     }
 }
 
@@ -304,6 +312,7 @@ private fun MainShell(
 private fun BottomBar(
     currentTab: Screen,
     onHome: () -> Unit,
+    onMessages: () -> Unit,
     onProfile: () -> Unit,
 ) {
     // The bar blends into the page: same background colour, hairline on top,
@@ -324,7 +333,7 @@ private fun BottomBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(74.dp)
-                .padding(horizontal = 52.dp),
+                .padding(horizontal = 48.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             NavItem(
@@ -335,7 +344,14 @@ private fun BottomBar(
                 onClick = onHome,
                 modifier = Modifier.weight(1f),
             )
-            Spacer(Modifier.weight(1f))
+            NavItem(
+                icon = Icons.Outlined.Email,
+                activeIcon = Icons.Filled.Email,
+                label = "Chats",
+                selected = currentTab == Screen.Messages,
+                onClick = onMessages,
+                modifier = Modifier.weight(1f),
+            )
             NavItem(
                 icon = Icons.Outlined.Person,
                 activeIcon = Icons.Filled.Person,
