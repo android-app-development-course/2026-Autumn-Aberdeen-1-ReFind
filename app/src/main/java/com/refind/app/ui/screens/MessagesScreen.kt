@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.refind.app.R
+import com.refind.app.ui.tr
 import com.refind.app.data.Conversation
 import com.refind.app.ui.components.ItemCard
 import com.refind.app.ui.components.MineChip
@@ -54,13 +55,13 @@ fun MessagesScreen(
             .statusBarsPadding(),
     ) {
         Text(
-            text = "Messages",
+            text = tr(R.string.messages_title),
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(start = 20.dp, top = 16.dp),
         )
         Text(
-            text = "Verify matches and arrange safe handovers here.",
+            text = tr(R.string.messages_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(start = 20.dp, top = 4.dp),

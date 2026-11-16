@@ -48,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.refind.app.R
+import com.refind.app.ui.tr
 import java.io.File
 
 /**
@@ -134,7 +136,7 @@ fun ItemPhotoPicker(
                         modifier = Modifier.size(18.dp),
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("Camera", style = MaterialTheme.typography.labelLarge)
+                    Text(tr(R.string.camera), style = MaterialTheme.typography.labelLarge)
                 }
                 OutlinedButton(
                     onClick = {
@@ -153,7 +155,7 @@ fun ItemPhotoPicker(
                         modifier = Modifier.size(18.dp),
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("Gallery", style = MaterialTheme.typography.labelLarge)
+                    Text(tr(R.string.gallery), style = MaterialTheme.typography.labelLarge)
                 }
             }
         } else {
@@ -190,14 +192,14 @@ fun ItemPhotoPicker(
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        "Remove",
+tr(R.string.remove),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White,
                     )
                 }
             }
             Text(
-                text = "One photo per report. Tap Remove to replace it.",
+                text = tr(R.string.photo_note),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 6.dp),

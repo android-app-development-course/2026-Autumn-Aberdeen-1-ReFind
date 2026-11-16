@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -61,6 +62,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.refind.app.R
+import com.refind.app.ui.tr
 import com.refind.app.data.Category
 import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
@@ -120,9 +123,9 @@ fun Modifier.staggerIn(index: Int, stepMs: Long = 70L): Modifier = composed {
 @Composable
 fun StatusBadge(status: ItemStatus, modifier: Modifier = Modifier) {
     val (bg, fg, label) = if (status == ItemStatus.LOST) {
-        Triple(LostOrangeContainer, LostOrange, "LOST")
+        Triple(LostOrangeContainer, LostOrange, tr(R.string.status_lost))
     } else {
-        Triple(Blue100, Blue600, "FOUND")
+        Triple(Blue100, Blue600, tr(R.string.status_found))
     }
     Row(
         modifier = modifier
@@ -284,7 +287,7 @@ fun MineChip(modifier: Modifier = Modifier) {    Row(
             .padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
         Text(
-            text = "YOU",
+            text = tr(R.string.chip_you),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -309,7 +312,7 @@ fun RewardChip(amount: Int, modifier: Modifier = Modifier) {
         )
         Spacer(Modifier.width(4.dp))
         Text(
-            text = "$amount pts",
+            text = tr(R.string.reward_points, amount),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSecondaryContainer,
         )
@@ -360,12 +363,12 @@ fun NewReportBanner(
                 Spacer(Modifier.width(14.dp))
                 Column(Modifier.weight(1f)) {
                     Text(
-                        text = "Report an item",
+                        text = tr(R.string.banner_report_title),
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
                     )
                     Text(
-                        text = "Lost or found on campus? Post it in seconds.",
+                        text = tr(R.string.banner_report_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White.copy(alpha = 0.85f),
                     )
@@ -398,8 +401,8 @@ fun StatusTabs(
             .padding(4.dp),
     ) {
         listOf(
-            ItemStatus.LOST to "Lost ($lostCount)",
-            ItemStatus.FOUND to "Found ($foundCount)",
+            ItemStatus.LOST to tr(R.string.tab_lost, lostCount),
+            ItemStatus.FOUND to tr(R.string.tab_found, foundCount),
         ).forEach { (status, label) ->
             val isSelected = selected == status
             val bg by androidx.compose.animation.animateColorAsState(

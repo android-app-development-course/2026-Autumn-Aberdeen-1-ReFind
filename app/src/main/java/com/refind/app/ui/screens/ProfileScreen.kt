@@ -30,6 +30,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -54,8 +55,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
+import com.refind.app.AppInfo
 import com.refind.app.R
+import com.refind.app.ui.tr
 import com.refind.app.data.DemoData
 import com.refind.app.data.ItemStatus
 import com.refind.app.data.ItemReport
@@ -76,6 +81,11 @@ fun ProfileScreen(
     var notificationsOn by remember { mutableStateOf(true) }
     var showSignOutDialog by remember { mutableStateOf(false) }
     var showAboutDialog by remember { mutableStateOf(false) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
+
+    // Which language the app is currently showing (per-app locale).
+    val currentTags = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+    val languageLabel = if (currentTags.startsWith("zh")) "中文" else "English"
 
     Column(
         modifier = modifier
@@ -122,12 +132,12 @@ fun ProfileScreen(
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = "${DemoData.USER_NAME} Chen",
+                    text = "Peter Chen",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    text = "12 items reunited 🎉",
+                    text = tr(R.string.items_reunited, 12),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -143,14 +153,14 @@ fun ProfileScreen(
                 .padding(horizontal = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            StatCard(value = myReports.size, label = "Reports", modifier = Modifier.weight(1f))
-            StatCard(value = 1, label = "Matches", modifier = Modifier.weight(1f))
-            StatCard(value = 180, label = "Points", modifier = Modifier.weight(1f))
+            StatCard(value = myReports.size, label = tr(R.string.stat_reports), modifier = Modifier.weight(1f))
+            StatCard(value = 1, label = tr(R.string.stat_matches), modifier = Modifier.weight(1f))
+            StatCard(value = 180, label = tr(R.string.stat_points), modifier = Modifier.weight(1f))
         }
 
         Spacer(Modifier.height(22.dp))
         Text(
-            text = "  MY REPORTS",
+            text = "  " + tr(R.string.label_my_reports),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 24.dp),
@@ -166,7 +176,7 @@ fun ProfileScreen(
 
         Spacer(Modifier.height(22.dp))
         Text(
-            text = "  SETTINGS",
+            text = "  " + tr(R.string.label_settings),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 24.dp),
@@ -178,15 +188,32 @@ fun ProfileScreen(
         ) {
             SettingsRow(
                 icon = { Icon(Icons.Outlined.Notifications, contentDescription = null, tint = Blue600) },
-                title = "Match notifications",
+                title = tr(R.string.match_notifications),
             ) {
                 Switch(checked = notificationsOn, onCheckedChange = { notificationsOn = it })
             }
             SettingsRow(
                 icon = { Icon(Icons.Outlined.Info, contentDescription = null, tint = Blue600) },
-                title = "About ReFind",
+                title = tr(R.string.about_refind),
                 onClick = { showAboutDialog = true },
             ) {
+                Icon(
+                    Icons.Outlined.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            SettingsRow(
+                icon = { Icon(Icons.Outlined.Language, contentDescription = null, tint = Blue600) },
+                title = tr(R.string.language),
+                onClick = { showLanguageDialog = true },
+            ) {
+                Text(
+                    text = languageLabel,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(Modifier.width(8.dp))
                 Icon(
                     Icons.Outlined.ChevronRight,
                     contentDescription = null,
@@ -201,7 +228,7 @@ fun ProfileScreen(
                         tint = MaterialTheme.colorScheme.error,
                     )
                 },
-                title = "Sign out",
+                title = tr(R.string.sign_out),
                 titleColor = MaterialTheme.colorScheme.error,
                 onClick = { showSignOutDialog = true },
             ) {
@@ -213,22 +240,63 @@ fun ProfileScreen(
             }
         }
 
+        if (showLanguageDialog) {
+            AlertDialog(
+                onDismissRequest = { showLanguageDialog = false },
+                title = { Text(tr(R.string.pick_language)) },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(
+                            onClick = {
+                                showLanguageDialog = false
+                                AppCompatDelegate.setApplicationLocales(
+                                    LocaleListCompat.forLanguageTags("en"),
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                tr(R.string.language_english),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                        TextButton(
+                            onClick = {
+                                showLanguageDialog = false
+                                AppCompatDelegate.setApplicationLocales(
+                                    LocaleListCompat.forLanguageTags("zh"),
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                tr(R.string.language_chinese),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    }
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(onClick = { showLanguageDialog = false }) {
+                        Text(tr(R.string.action_cancel))
+                    }
+                },
+            )
+        }
+
         if (showAboutDialog) {
             AlertDialog(
                 onDismissRequest = { showAboutDialog = false },
-                title = { Text("ReFind") },
+                title = { Text(tr(R.string.app_name)) },
                 text = {
-                    Text(
-                        "Version 0.1.0-alpha.1\n\n" +
-                            "From lost to found — automatically. ReFind pairs lost and found " +
-                            "reports with image matching, then verifies every claim through " +
-                            "a private question.\n\n" +
-                            "Team: Heng Liu · Honghui Zhang · Yuchen Huang",
-                    )
+                    Text("Version " + com.refind.app.AppInfo.VERSION + "\n\n" + tr(R.string.about_body))
                 },
                 confirmButton = {
                     TextButton(onClick = { showAboutDialog = false }) {
-                        Text("Close")
+                        Text(tr(R.string.action_close))
                     }
                 },
             )
@@ -237,9 +305,9 @@ fun ProfileScreen(
         if (showSignOutDialog) {
             AlertDialog(
                 onDismissRequest = { showSignOutDialog = false },
-                title = { Text("Sign out?") },
+                title = { Text(tr(R.string.sign_out_title)) },
                 text = {
-                    Text("Your demo reports live only in memory and will disappear. You can sign back in at any time.")
+                    Text(tr(R.string.sign_out_desc))
                 },
                 confirmButton = {
                     TextButton(
@@ -248,12 +316,12 @@ fun ProfileScreen(
                             onSignOut()
                         },
                     ) {
-                        Text("Sign out", color = MaterialTheme.colorScheme.error)
+                        Text(tr(R.string.sign_out), color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showSignOutDialog = false }) {
-                        Text("Cancel")
+                        Text(tr(R.string.action_cancel))
                     }
                 },
             )
@@ -261,7 +329,7 @@ fun ProfileScreen(
 
         Spacer(Modifier.height(30.dp))
         Text(
-            text = "ReFind v0.1.0-alpha.1",
+            text = "ReFind v" + com.refind.app.AppInfo.VERSION,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -434,7 +502,7 @@ private fun StackedReportsPreview(
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "My Reports",
+                            text = tr(R.string.my_reports_title),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
@@ -454,7 +522,7 @@ private fun StackedReportsPreview(
                     }
                     latest?.let {
                         Text(
-                            text = "Latest: ${it.title} · ${it.timeAgo}",
+                            text = tr(R.string.my_reports_latest, it.title, it.timeAgo),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
@@ -462,7 +530,7 @@ private fun StackedReportsPreview(
                         )
                     }
                     Text(
-                        text = "$lostCount lost · $foundCount found — tap to view all",
+                        text = tr(R.string.my_reports_breakdown, lostCount, foundCount),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary,
                     )

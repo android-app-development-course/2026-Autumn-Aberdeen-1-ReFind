@@ -40,7 +40,9 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SearchOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -67,6 +69,8 @@ import androidx.compose.ui.unit.dp
 import com.refind.app.data.Category
 import com.refind.app.data.DemoData
 import com.refind.app.data.ItemReport
+import com.refind.app.R
+import com.refind.app.ui.tr
 import com.refind.app.data.ItemStatus
 import com.refind.app.ui.components.ItemPhotoPicker
 import com.refind.app.ui.components.categoryIcon
@@ -107,6 +111,7 @@ fun ReportScreen(
     var photo by rememberSaveable { mutableStateOf<String?>(null) }
     var location by rememberSaveable { mutableStateOf("Main Library, 2F") }
     var timeAgo by rememberSaveable { mutableStateOf("Just now") }
+    var customTimeText by rememberSaveable { mutableStateOf("") }
     var reward by remember { mutableStateOf<Int?>(null) }
 
     val progress by animateFloatAsState(
@@ -132,13 +137,13 @@ fun ReportScreen(
                 )
             }
             Text(
-                text = "New report",
+                text = tr(R.string.new_report),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(Modifier.weight(1f))
             Text(
-                text = if (step < 3) "Step ${step + 1} of 3" else "Done",
+                text = if (step < 3) tr(R.string.step_of, step + 1, 3) else tr(R.string.done),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -197,6 +202,11 @@ fun ReportScreen(
                         onLocation = { location = it },
                         timeAgo = timeAgo,
                         onTime = { timeAgo = it },
+                        customTimeText = customTimeText,
+                        onCustomTime = {
+                            customTimeText = it
+                            timeAgo = it
+                        },
                         reward = reward,
                         onReward = { reward = it },
                     )
@@ -210,15 +220,15 @@ fun ReportScreen(
         Box(Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
             when (step) {
                 0 -> NextButton(
-                    text = "Continue",
+                    text = tr(R.string.action_continue),
                     enabled = true,
                 ) { step = 1 }
                 1 -> NextButton(
-                    text = "Continue",
+                    text = tr(R.string.action_continue),
                     enabled = category != null && title.isNotBlank(),
                 ) { step = 2 }
                 2 -> NextButton(
-                    text = "Submit report",
+                    text = tr(R.string.submit_report),
                     enabled = true,
                 ) {
                     step = 3
@@ -239,7 +249,7 @@ fun ReportScreen(
                         )
                     }
                 }
-                else -> NextButton(text = "Back to feed", enabled = true) { onCancel() }
+                else -> NextButton(text = tr(R.string.back_to_feed), enabled = true) { onCancel() }
             }
         }
     }
@@ -269,13 +279,13 @@ private fun TypeStep(
     onSelect: (ItemStatus) -> Unit,
 ) {
     Text(
-        text = "What happened?",
+        text = tr(R.string.what_happened),
         style = MaterialTheme.typography.headlineSmall,
         color = MaterialTheme.colorScheme.onSurface,
     )
     Spacer(Modifier.height(6.dp))
     Text(
-        text = "Pick the kind of report you are about to create.",
+        text = tr(R.string.pick_kind),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -284,13 +294,13 @@ private fun TypeStep(
     listOf(
         Triple(
             ItemStatus.LOST,
-            "I lost something",
-            "Tell ReFind what's missing — we'll watch every new found report for you.",
+            tr(R.string.lost_heading),
+            tr(R.string.lost_description),
         ),
         Triple(
             ItemStatus.FOUND,
-            "I found something",
-            "Post it so the owner can claim it through a private verification question.",
+            tr(R.string.found_heading),
+            tr(R.string.found_description),
         ),
     ).forEach { (status, heading, description) ->
         val isSelected = selected == status
@@ -366,13 +376,13 @@ private fun ItemStep(
     onPhoto: (String?) -> Unit,
 ) {
     Text(
-        text = "What is it?",
+        text = tr(R.string.what_is_it),
         style = MaterialTheme.typography.headlineSmall,
         color = MaterialTheme.colorScheme.onSurface,
     )
     Spacer(Modifier.height(16.dp))
     Text(
-        text = "CATEGORY",
+        text = tr(R.string.label_category),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -429,8 +439,8 @@ private fun ItemStep(
         value = title,
         onValueChange = onTitle,
         modifier = Modifier.fillMaxWidth(),
-        label = { Text("Item name") },
-        placeholder = { Text("e.g. Blue water bottle") },
+        label = { Text(tr(R.string.item_name)) },
+        placeholder = { Text(tr(R.string.item_name_hint)) },
         singleLine = true,
         shape = RoundedCornerShape(16.dp),
         colors = OutlinedTextFieldDefaults.colors(
@@ -441,7 +451,7 @@ private fun ItemStep(
 
     Spacer(Modifier.height(18.dp))
     Text(
-        text = "ITEM PHOTO",
+        text = tr(R.string.label_item_photo),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -453,7 +463,7 @@ private fun ItemStep(
 
     Spacer(Modifier.height(18.dp))
     Text(
-        text = "COLOUR",
+        text = tr(R.string.label_colour),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -510,24 +520,30 @@ private fun ItemStep(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 private fun WhereWhenStep(
     location: String,
     onLocation: (String) -> Unit,
     timeAgo: String,
     onTime: (String) -> Unit,
+    customTimeText: String,
+    onCustomTime: (String) -> Unit,
     reward: Int?,
     onReward: (Int?) -> Unit,
 ) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
+    var pickedDateMillis by remember { mutableStateOf<Long?>(null) }
+    val customSelected = customTimeText.isNotBlank()
     Text(
-        text = "Where & when?",
+        text = tr(R.string.label_where_when),
         style = MaterialTheme.typography.headlineSmall,
         color = MaterialTheme.colorScheme.onSurface,
     )
     Spacer(Modifier.height(16.dp))
     Text(
-        text = "LAST SEEN AT",
+        text = tr(R.string.label_last_seen),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -545,7 +561,7 @@ private fun WhereWhenStep(
     )
     Spacer(Modifier.height(18.dp))
     Text(
-        text = "WHEN",
+        text = tr(R.string.label_when),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -555,7 +571,7 @@ private fun WhereWhenStep(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         TIMES.forEach { t ->
-            val isSelected = timeAgo == t
+            val isSelected = timeAgo == t && !customSelected
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
@@ -566,7 +582,10 @@ private fun WhereWhenStep(
                             MaterialTheme.colorScheme.surfaceVariant
                         },
                     )
-                    .clickable { onTime(t) }
+                    .clickable {
+                        onTime(t)
+                        onCustomTime("")
+                    }
                     .padding(horizontal = 14.dp, vertical = 9.dp),
             ) {
                 Text(
@@ -580,10 +599,100 @@ private fun WhereWhenStep(
                 )
             }
         }
+        // Custom: opens the date + time pickers below.
+        val isCustom = customSelected
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(
+                    if (isCustom) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    },
+                )
+                .clickable { showDatePicker = true }
+                .padding(horizontal = 14.dp, vertical = 9.dp),
+        ) {
+            Text(
+                text = tr(R.string.custom),
+                style = MaterialTheme.typography.labelLarge,
+                color = if (isCustom) {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            )
+        }
+    }
+    if (customSelected) {
+        Text(
+            text = tr(R.string.custom_time_prefix, customTimeText),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 8.dp),
+        )
+    }
+
+    // Date picker, then time picker, in sequence.
+    if (showDatePicker) {
+        val datePickerState = androidx.compose.material3.rememberDatePickerState(
+            initialSelectedDateMillis = System.currentTimeMillis(),
+        )
+        androidx.compose.material3.DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        pickedDateMillis = datePickerState.selectedDateMillis
+                            ?: System.currentTimeMillis()
+                        showDatePicker = false
+                        showTimePicker = true
+                    },
+                ) { Text(tr(R.string.action_next)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) { Text(tr(R.string.action_cancel)) }
+            },
+        ) {
+            androidx.compose.material3.DatePicker(state = datePickerState)
+        }
+    }
+    if (showTimePicker) {
+        val timeState = androidx.compose.material3.rememberTimePickerState(is24Hour = true)
+        AlertDialog(
+            onDismissRequest = { showTimePicker = false },
+            title = { Text(tr(R.string.pick_a_time)) },
+            text = {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    androidx.compose.material3.TimePicker(state = timeState)
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val calendar = java.util.Calendar.getInstance().apply {
+                            timeInMillis = pickedDateMillis ?: System.currentTimeMillis()
+                            set(java.util.Calendar.HOUR_OF_DAY, timeState.hour)
+                            set(java.util.Calendar.MINUTE, timeState.minute)
+                        }
+                        val text = java.text.SimpleDateFormat(
+                            "d MMM, HH:mm",
+                            java.util.Locale.ENGLISH,
+                        ).format(calendar.time)
+                        onCustomTime(text)
+                        showTimePicker = false
+                    },
+                ) { Text(tr(R.string.action_set)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showTimePicker = false }) { Text(tr(R.string.action_cancel)) }
+            },
+        )
     }
     Spacer(Modifier.height(18.dp))
     Text(
-        text = "REWARD (OPTIONAL)",
+        text = tr(R.string.label_reward),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -593,7 +702,7 @@ private fun WhereWhenStep(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         REWARDS.forEach { r ->
-            val label = r?.let { "$it pts" } ?: "None"
+            val label = r?.let { tr(R.string.reward_points, it) } ?: tr(R.string.reward_none)
             val isSelected = reward == r
             Box(
                 modifier = Modifier
@@ -660,13 +769,13 @@ private fun SuccessStep() {
         }
         Spacer(Modifier.height(24.dp))
         Text(
-            text = "Report submitted!",
+            text = tr(R.string.report_submitted),
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "Nearby finders have been notified. We'll alert you the moment a match appears.",
+            text = tr(R.string.report_success_desc),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,

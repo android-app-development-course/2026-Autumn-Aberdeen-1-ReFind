@@ -41,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.refind.app.R
+import com.refind.app.ui.tr
 import com.refind.app.data.DemoData
 import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
@@ -142,7 +143,7 @@ fun ItemDetailScreen(
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
-                        text = "2 mutual friends · on campus",
+                        text = tr(R.string.label_reporter_friends, 2),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -153,12 +154,12 @@ fun ItemDetailScreen(
 
             // Facts grid
             val facts = listOf(
-                Triple(Icons.Outlined.Place, "Location", item.location),
-                Triple(Icons.Outlined.Schedule, "Reported", item.timeAgo),
-                Triple(Icons.Outlined.Palette, "Colour", item.colour.ifBlank { "—" }),
+                Triple(Icons.Outlined.Place, tr(R.string.label_location), item.location),
+                Triple(Icons.Outlined.Schedule, tr(R.string.label_reported), item.timeAgo),
+                Triple(Icons.Outlined.Palette, tr(R.string.label_colour), item.colour.ifBlank { "—" }),
                 Triple(
                     categoryIcon(item.category),
-                    "Category",
+                    tr(R.string.label_category),
                     item.category.label,
                 ),
             )
@@ -223,12 +224,12 @@ fun ItemDetailScreen(
                         Spacer(Modifier.width(12.dp))
                         Column {
                             Text(
-                                text = "Potential match found!",
+                                text = tr(R.string.potential_match),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
                             Text(
-                                text = "A finder reported a similar item nearby — take a look.",
+                                text = tr(R.string.potential_match_desc),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
@@ -246,7 +247,7 @@ fun ItemDetailScreen(
                 shape = RoundedCornerShape(18.dp),
             ) {
                 Text(
-                    text = if (hasMatch) "Open match chat" else "Messages",
+                    text = if (hasMatch) tr(R.string.open_match_chat) else tr(R.string.messages),
                     style = MaterialTheme.typography.labelLarge,
                 )
             }

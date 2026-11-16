@@ -34,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.refind.app.data.ItemReport
+import com.refind.app.R
+import com.refind.app.ui.tr
 import com.refind.app.data.ItemStatus
 import com.refind.app.ui.components.ItemCard
 import com.refind.app.ui.components.StatusTabs
@@ -68,7 +70,7 @@ fun MyReportsScreen(
                 )
             }
             Text(
-                text = "My Reports",
+                text = tr(R.string.my_reports_title),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
@@ -100,16 +102,16 @@ fun MyReportsScreen(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "Nothing here yet",
+                    text = tr(R.string.my_reports_empty_title),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
                     text = if (selectedTab == ItemStatus.FOUND) {
-                        "Found something on campus? Tap + to report it."
+                        tr(R.string.my_reports_empty_found)
                     } else {
-                        "Lost something? Tap + and let ReFind look for you."
+                        tr(R.string.my_reports_empty_lost)
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

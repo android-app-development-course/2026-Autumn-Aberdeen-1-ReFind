@@ -1,3 +1,130 @@
 <resources>
     <string name="app_name">ReFind</string>
+
+    <!-- Login -->
+    <string name="login_welcome">Welcome back 👋</string>
+    <string name="login_slogan">From lost to found — automatically.</string>
+    <string name="login_subtitle">Sign in and let ReFind keep looking for you.</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="login_disclaimer">Prototype build — any password works. Reports are stored on-device only.</string>
+
+    <!-- Feed -->
+    <string name="feed_greeting">Hi, %1$s 👋</string>
+    <string name="feed_subtitle">Lost something? ReFind is already looking.</string>
+    <string name="search_hint">Search lost &amp; found…</string>
+    <string name="banner_report_title">Report an item</string>
+    <string name="banner_report_subtitle">Lost or found on campus? Post it in seconds.</string>
+    <string name="tab_lost">Lost (%1$d)</string>
+    <string name="tab_found">Found (%1$d)</string>
+
+    <!-- Report wizard -->
+    <string name="new_report">New report</string>
+    <string name="step_of">Step %1$d of %2$d</string>
+    <string name="done">Done</string>
+    <string name="what_happened">What happened?</string>
+    <string name="pick_kind">Pick the kind of report you are about to create.</string>
+    <string name="lost_heading">I lost something</string>
+    <string name="lost_description">Tell ReFind what\'s missing — we\'ll watch every new found report for you.</string>
+    <string name="found_heading">I found something</string>
+    <string name="found_description">Post it so the owner can claim it through a private verification question.</string>
+    <string name="action_continue">Continue</string>
+    <string name="what_is_it">What is it?</string>
+    <string name="label_category">CATEGORY</string>
+    <string name="item_name">Item name</string>
+    <string name="item_name_hint">e.g. Blue water bottle</string>
+    <string name="label_item_photo">ITEM PHOTO</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="remove">Remove</string>
+    <string name="photo_note">One photo per report. Tap Remove to replace it.</string>
+    <string name="item_photo">Item photo</string>
+    <string name="label_colour">COLOUR</string>
+    <string name="label_where_when">Where &amp; when?</string>
+    <string name="label_last_seen">LAST SEEN AT</string>
+    <string name="label_when">WHEN</string>
+    <string name="custom">Custom</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_chats">Chats</string>
+    <string name="nav_profile">Profile</string>
+    <string name="status_lost">LOST</string>
+    <string name="status_found">FOUND</string>
+    <string name="chip_you">YOU</string>
+    <string name="custom_time_prefix">Custom time: %1$s</string>
+    <string name="pick_a_time">Pick a time</string>
+    <string name="action_next">Next</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_set">Set</string>
+    <string name="label_reward">REWARD (OPTIONAL)</string>
+    <string name="reward_none">None</string>
+    <string name="reward_points">%1$d pts</string>
+    <string name="submit_report">Submit report</string>
+    <string name="back_to_feed">Back to feed</string>
+    <string name="report_submitted">Report submitted!</string>
+    <string name="report_success_desc">Nearby finders have been notified. We\'ll alert you the moment a match appears.</string>
+
+    <!-- My Reports -->
+    <string name="my_reports_title">My Reports</string>
+    <string name="my_reports_empty_lost">Lost something? Tap + and let ReFind look for you.</string>
+    <string name="my_reports_empty_found">Found something on campus? Tap + to report it.</string>
+    <string name="my_reports_empty_title">Nothing here yet</string>
+    <string name="my_reports_latest">Latest: %1$s · %2$s</string>
+    <string name="my_reports_breakdown">%1$d lost · %2$d found — tap to view all</string>
+
+    <!-- Item detail -->
+    <string name="action_back">Back</string>
+    <string name="action_share">Share</string>
+    <string name="label_reporter_friends">%1$d mutual friends · on campus</string>
+    <string name="label_location">Location</string>
+    <string name="label_reported">Reported</string>
+    <string name="potential_match">Potential match found!</string>
+    <string name="potential_match_desc">A finder reported a similar item nearby — take a look.</string>
+    <string name="open_match_chat">Open match chat</string>
+    <string name="messages">Messages</string>
+
+    <!-- Match found -->
+    <string name="its_a_match">It\'s a match!</string>
+    <string name="paired_automatically">ReFind paired these two reports automatically</string>
+    <string name="match_your_report">Your report</string>
+    <string name="match_finder_find">%1$s\'s find</string>
+    <string name="confidence_label">confidence</string>
+    <string name="factor_category">Category</string>
+    <string name="factor_colour">Colour</string>
+    <string name="factor_location">Location</string>
+    <string name="factor_time">Time</string>
+    <string name="matched_by_note">Matched by image similarity, category, colour, location and time.</string>
+    <string name="start_verification_chat">Start verification chat</string>
+    <string name="not_my_item">Not my item</string>
+
+    <!-- Chat -->
+    <string name="chatting_about">Chatting about: %1$s (your report)</string>
+    <string name="safe_handover">Safe handover point: Library Cafe, 3:00 PM</string>
+    <string name="online">online</string>
+    <string name="type_a_message">Type a message…</string>
+    <string name="action_send">Send</string>
+
+    <!-- Messages inbox -->
+    <string name="messages_title">Messages</string>
+    <string name="messages_subtitle">Verify matches and arrange safe handovers here.</string>
+
+    <!-- Profile -->
+    <string name="items_reunited">%1$d items reunited 🎉</string>
+    <string name="stat_reports">Reports</string>
+    <string name="stat_matches">Matches</string>
+    <string name="stat_points">Points</string>
+    <string name="label_my_reports">MY REPORTS</string>
+    <string name="label_settings">SETTINGS</string>
+    <string name="match_notifications">Match notifications</string>
+    <string name="about_refind">About ReFind</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_title">Sign out?</string>
+    <string name="sign_out_desc">Your demo reports live only in memory and will disappear. You can sign back in at any time.</string>
+    <string name="about_body">From lost to found — automatically. ReFind pairs lost and found reports with image matching, then verifies every claim through a private question.\n\nTeam: Heng Liu · Honghui Zhang · Yuchen Huang</string>
+    <string name="action_close">Close</string>
+    <string name="language">Language</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">中文</string>
+    <string name="pick_language">Pick a language</string>
 </resources>
+

@@ -52,6 +52,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.refind.app.R
+import com.refind.app.ui.tr
 import com.refind.app.data.ItemReport
 import com.refind.app.ui.components.StatusBadge
 import com.refind.app.ui.components.categoryIcon
@@ -64,7 +66,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-private val MATCH_FACTORS = listOf("Category", "Colour", "Location", "Time")
+private val MATCH_FACTORS = listOf(
+    R.string.factor_category,
+    R.string.factor_colour,
+    R.string.factor_location,
+    R.string.factor_time,
+)
 
 /**
  * The signature moment: two reports fly in from the sides, link together,
@@ -132,7 +139,7 @@ fun MatchFoundScreen(
 
         // Headline
         Text(
-            text = "It's a match!",
+            text = tr(R.string.its_a_match),
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
@@ -144,7 +151,7 @@ fun MatchFoundScreen(
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            text = "ReFind paired these two reports automatically",
+            text = tr(R.string.paired_automatically),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -159,7 +166,7 @@ fun MatchFoundScreen(
         ) {
             MatchSideCard(
                 item = lostItem,
-                caption = "Your report",
+                caption = tr(R.string.match_your_report),
                 isLost = true,
                 offsetX = -(1f - slideIn.value) * 240f * pxPerDp,
                 modifier = Modifier.weight(1f),
@@ -188,7 +195,7 @@ fun MatchFoundScreen(
             Spacer(Modifier.width(10.dp))
             MatchSideCard(
                 item = foundItem,
-                caption = "Amy's find",
+                caption = tr(R.string.match_finder_find, foundItem.reporter),
                 isLost = false,
                 offsetX = (1f - slideIn.value) * 240f * pxPerDp,
                 modifier = Modifier.weight(1f),
@@ -223,7 +230,7 @@ fun MatchFoundScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    text = "confidence",
+                    text = tr(R.string.confidence_label),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -238,10 +245,10 @@ fun MatchFoundScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth(),
         ) {
-            MATCH_FACTORS.forEachIndexed { index, factor ->
+            MATCH_FACTORS.forEachIndexed { index, factorRes ->
                 if (index < chipsShown) {
                     FactorChip(
-                        label = factor,
+                        label = tr(factorRes),
                         scaleIn = true,
                         modifier = Modifier,
                     )
@@ -251,7 +258,7 @@ fun MatchFoundScreen(
 
         Spacer(Modifier.height(10.dp))
         Text(
-            text = "Matched by image similarity, category, colour, location and time.",
+            text = tr(R.string.matched_by_note),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -276,11 +283,11 @@ fun MatchFoundScreen(
                     modifier = Modifier.size(18.dp),
                 )
                 Spacer(Modifier.width(10.dp))
-                Text("Start verification chat", style = MaterialTheme.typography.labelLarge)
+                Text(tr(R.string.start_verification_chat), style = MaterialTheme.typography.labelLarge)
             }
             TextButton(onClick = onBack) {
                 Text(
-                    "Not my item",
+                    tr(R.string.not_my_item),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }

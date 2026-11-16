@@ -52,6 +52,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.refind.app.R
+import com.refind.app.ui.tr
 import com.refind.app.data.ChatMessage
 import com.refind.app.data.DemoData
 import com.refind.app.data.ItemReport
@@ -156,7 +157,7 @@ fun ChatScreen(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = "Chatting about: ${item.title} (your report)",
+                        text = tr(R.string.chatting_about, item.title),
                         style = MaterialTheme.typography.labelMedium,
                         color = Blue900,
                         modifier = Modifier.weight(1f),
@@ -176,7 +177,7 @@ fun ChatScreen(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = "Safe handover point: Library Cafe, 3:00 PM",
+                        text = tr(R.string.safe_handover),
                         style = MaterialTheme.typography.labelMedium,
                         color = Blue900,
                     )
@@ -216,7 +217,7 @@ fun ChatScreen(
                 value = draft,
                 onValueChange = { draft = it },
                 modifier = Modifier.weight(1f),
-                placeholder = { Text("Type a message…") },
+                placeholder = { Text(tr(R.string.type_a_message)) },
                 shape = RoundedCornerShape(24.dp),
                 maxLines = 3,
                 colors = OutlinedTextFieldDefaults.colors(
@@ -244,7 +245,7 @@ fun ChatScreen(
             ) {
                 Icon(
                     Icons.AutoMirrored.Outlined.Send,
-                    contentDescription = "Send",
+                    contentDescription = tr(R.string.action_send),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(20.dp),
                 )

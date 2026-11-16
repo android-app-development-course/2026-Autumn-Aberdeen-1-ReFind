@@ -2,7 +2,10 @@ package com.refind.app.ui
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -13,6 +16,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,7 +38,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -41,6 +45,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,13 +54,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.refind.app.R
+import com.refind.app.data.Conversation
 import com.refind.app.data.DemoData
-import com.refind.app.data.ItemReport
 import com.refind.app.ui.screens.ChatScreen
 import com.refind.app.ui.screens.FeedScreen
 import com.refind.app.ui.screens.ItemDetailScreen
@@ -65,6 +71,8 @@ import com.refind.app.ui.screens.MessagesScreen
 import com.refind.app.ui.screens.MyReportsScreen
 import com.refind.app.ui.screens.ProfileScreen
 import com.refind.app.ui.screens.ReportScreen
+import com.refind.app.ui.tr
+import kotlin.math.roundToInt
 
 /**
  * Every destination of the prototype. An enum so the current screen
@@ -118,7 +126,7 @@ fun ReFindApp(modifier: Modifier = Modifier) {
     }
 
     // Opens a chat thread from anywhere; the back button returns to `origin`.
-    val openChat: (com.refind.app.data.Conversation, Screen) -> Unit = { conv, origin ->
+    val openChat: (Conversation, Screen) -> Unit = { conv, origin ->
         activeConversation = conv
         chatOrigin = origin
         screen = Screen.Chat
@@ -131,54 +139,82 @@ fun ReFindApp(modifier: Modifier = Modifier) {
         DemoData.foundItems.first { it.id == DemoData.MATCHED_FOUND_ID }
     }
 
-    Box(
+    // Bottom-bar underline state lives HERE, above AnimatedContent, so the
+    // indicator slides continuously between tabs instead of restarting from
+    // an initial position every time the bar recomposes.
+    val barDensity = LocalDensity.current
+    var barWidthPx by remember { mutableStateOf(1f) }
+    val horizontalPad = 48.dp
+    val underlineWidth = 36.dp
+    val selectedTabIdx = when (screen) {
+        Screen.Messages -> 1
+        Screen.Profile -> 2
+        else -> 0
+    }
+    val slotWidthPx =
+        (barWidthPx - with(barDensity) { (horizontalPad * 2).toPx() }) / 3f
+    val underlineTargetPx =
+        with(barDensity) { horizontalPad.toPx() } +
+            slotWidthPx * (selectedTabIdx + 0.5f) -
+            with(barDensity) { (underlineWidth / 2).toPx() }
+    val underlineLeft = remember { Animatable(underlineTargetPx) }
+    LaunchedEffect(underlineTargetPx, barWidthPx) {
+        underlineLeft.animateTo(
+            underlineTargetPx,
+            spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow,
+            ),
+        )
+    }
+
+    val showBottomBar = screen == Screen.Feed ||
+        screen == Screen.Messages ||
+        screen == Screen.Profile
+
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        AnimatedContent(
-            targetState = screen,
-            transitionSpec = {
-                val from = depthOf(initialState)
-                val to = depthOf(targetState)
-                when {
-                    // Report is a modal: it slides up while the page below
-                    // dims and shrinks slightly in place (no sideways move).
-                    targetState == Screen.Report ->
-                        (slideInVertically(tween(380)) { it } + fadeIn(tween(380))) togetherWith
-                            (scaleOut(targetScale = 0.96f) + fadeOut(tween(320)))
+        Box(Modifier.weight(1f)) {
+            AnimatedContent(
+                targetState = screen,
+                transitionSpec = {
+                    val from = depthOf(initialState)
+                    val to = depthOf(targetState)
+                    when {
+                        // Report is a modal: it slides up while the page below
+                        // dims and shrinks slightly in place (no sideways move).
+                        targetState == Screen.Report ->
+                            (slideInVertically(tween(380)) { it } + fadeIn(tween(380))) togetherWith
+                                (scaleOut(targetScale = 0.96f) + fadeOut(tween(320)))
 
-                    initialState == Screen.Report ->
-                        (scaleIn(initialScale = 0.96f) + fadeIn(tween(300))) togetherWith
-                            (slideOutVertically(tween(340)) { it } + fadeOut(tween(340)))
+                        initialState == Screen.Report ->
+                            (scaleIn(initialScale = 0.96f) + fadeIn(tween(300))) togetherWith
+                                (slideOutVertically(tween(340)) { it } + fadeOut(tween(340)))
 
-                    // Tab switch: cross-fade.
-                    to == from ->
-                        fadeIn(tween(280)) togetherWith fadeOut(tween(280))
+                        // Tab switch: cross-fade.
+                        to == from ->
+                            fadeIn(tween(280)) togetherWith fadeOut(tween(280))
 
-                    // Push: content slides in from the right.
-                    to > from ->
-                        (slideInHorizontally(tween(340)) { it / 4 } + fadeIn(tween(340))) togetherWith
-                            (slideOutHorizontally(tween(340)) { -it / 5 } + fadeOut(tween(340)))
+                        // Push: content slides in from the right.
+                        to > from ->
+                            (slideInHorizontally(tween(340)) { it / 4 } + fadeIn(tween(340))) togetherWith
+                                (slideOutHorizontally(tween(340)) { -it / 5 } + fadeOut(tween(340)))
 
-                    // Pop: content slides in from the left.
-                    else ->
-                        (slideInHorizontally(tween(340)) { -it / 4 } + fadeIn(tween(340))) togetherWith
-                            (slideOutHorizontally(tween(340)) { it / 5 } + fadeOut(tween(340)))
-                }
-            },
-            label = "rootNav",
-        ) { target ->
-            when (target) {
-                Screen.Login -> LoginScreen(onLogin = { screen = Screen.Feed })
+                        // Pop: content slides in from the left.
+                        else ->
+                            (slideInHorizontally(tween(340)) { -it / 4 } + fadeIn(tween(340))) togetherWith
+                                (slideOutHorizontally(tween(340)) { it / 5 } + fadeOut(tween(340)))
+                    }
+                },
+                label = "rootNav",
+            ) { target ->
+                when (target) {
+                    Screen.Login -> LoginScreen(onLogin = { screen = Screen.Feed })
 
-                Screen.Feed -> MainShell(
-                    currentTab = target,
-                    onHome = { screen = Screen.Feed },
-                    onMessages = { screen = Screen.Messages },
-                    onProfile = { screen = Screen.Profile },
-                ) {
-                    FeedScreen(
+                    Screen.Feed -> FeedScreen(
                         userName = DemoData.USER_NAME,
                         lostItems = lostReports,
                         foundItems = DemoData.foundItems,
@@ -191,141 +227,118 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                             screen = Screen.ItemDetail
                         },
                     )
-                }
 
-                Screen.Profile -> MainShell(
-                    currentTab = target,
-                    onHome = { screen = Screen.Feed },
-                    onMessages = { screen = Screen.Messages },
-                    onProfile = { screen = Screen.Profile },
-                ) {
-                    ProfileScreen(
+                    Screen.Profile -> ProfileScreen(
                         myReports = (lostReports + DemoData.foundItems)
                             .filter { it.reporter == DemoData.USER_NAME },
                         onOpenReports = { screen = Screen.MyReports },
                         onSignOut = { screen = Screen.Login },
                     )
-                }
 
-                Screen.MyReports -> MyReportsScreen(
-                    myReports = (lostReports + DemoData.foundItems)
-                        .filter { it.reporter == DemoData.USER_NAME },
-                    onBack = { screen = Screen.Profile },
-                    onNewReport = {
-                        reportOrigin = Screen.MyReports
-                        screen = Screen.Report
-                    },
-                    onItemClick = {
-                        detailItemId = it.id
-                        screen = Screen.ItemDetail
-                    },
-                )
-
-                Screen.Report -> ReportScreen(
-                    onSubmitted = { newItem ->
-                        lostReports = listOf(newItem) + lostReports
-                    },
-                    onCancel = { screen = reportOrigin },
-                )
-
-                Screen.ItemDetail -> detailItem?.let { item ->
-                    ItemDetailScreen(
-                        item = item,
-                        hasMatch = item.id == DemoData.MATCHED_LOST_ID,
-                        onBack = { screen = Screen.Feed },
-                        onMatchClick = {
-                            matchOrigin = Screen.ItemDetail
-                            screen = Screen.MatchFound
+                    Screen.MyReports -> MyReportsScreen(
+                        myReports = (lostReports + DemoData.foundItems)
+                            .filter { it.reporter == DemoData.USER_NAME },
+                        onBack = { screen = Screen.Profile },
+                        onNewReport = {
+                            reportOrigin = Screen.MyReports
+                            screen = Screen.Report
                         },
-                        onChatClick = {
-                            chatOrigin = Screen.ItemDetail
-                            screen = Screen.Chat
+                        onItemClick = {
+                            detailItemId = it.id
+                            screen = Screen.ItemDetail
                         },
                     )
-                } ?: FeedScreen(
-                    userName = DemoData.USER_NAME,
-                    lostItems = lostReports,
-                    foundItems = DemoData.foundItems,
-                    onNewReport = {
-                        reportOrigin = Screen.Feed
-                        screen = Screen.Report
-                    },
-                    onItemClick = {},
-                )
 
-                Screen.MatchFound -> MatchFoundScreen(
-                    lostItem = matchedLost,
-                    foundItem = matchedFound,
-                    confidence = DemoData.MATCH_CONFIDENCE,
-                    onChat = {
-                        // The gate is passed: back from chat skips MatchFound.
-                        openChat(DemoData.conversations.first(), matchOrigin)
-                    },
-                    onBack = { screen = matchOrigin },
-                )
+                    Screen.Report -> ReportScreen(
+                        onSubmitted = { newItem ->
+                            lostReports = listOf(newItem) + lostReports
+                        },
+                        onCancel = { screen = reportOrigin },
+                    )
 
-                // Chats opened from the inbox stay inside the app shell so
-                // the user can hop tabs without backing out first.
-                // Chats are full-screen: the inbox back arrow returns there,
-                // and no bottom bar competes with the composer for space.
-                Screen.Chat -> ChatScreen(
-                    initialMessages = activeConversation.messages,
-                    item = activeConversation.item ?: matchedLost,
-                    peerName = activeConversation.peerName,
-                    peerSubtitle = activeConversation.peerRole,
-                    peerOnline = activeConversation.peerOnline,
-                    onBack = { screen = chatOrigin },
-                )
+                    Screen.ItemDetail -> detailItem?.let { item ->
+                        ItemDetailScreen(
+                            item = item,
+                            hasMatch = item.id == DemoData.MATCHED_LOST_ID,
+                            onBack = { screen = Screen.Feed },
+                            onMatchClick = {
+                                matchOrigin = Screen.ItemDetail
+                                screen = Screen.MatchFound
+                            },
+                            onChatClick = {
+                                chatOrigin = Screen.ItemDetail
+                                screen = Screen.Chat
+                            },
+                        )
+                    } ?: FeedScreen(
+                        userName = DemoData.USER_NAME,
+                        lostItems = lostReports,
+                        foundItems = DemoData.foundItems,
+                        onNewReport = {
+                            reportOrigin = Screen.Feed
+                            screen = Screen.Report
+                        },
+                        onItemClick = {},
+                    )
 
-                Screen.Messages -> MainShell(
-                    currentTab = target,
-                    onHome = { screen = Screen.Feed },
-                    onMessages = { screen = Screen.Messages },
-                    onProfile = { screen = Screen.Profile },
-                ) {
-                    MessagesScreen(
+                    Screen.MatchFound -> MatchFoundScreen(
+                        lostItem = matchedLost,
+                        foundItem = matchedFound,
+                        confidence = DemoData.MATCH_CONFIDENCE,
+                        onChat = {
+                            // The gate is passed: back from chat skips MatchFound.
+                            openChat(DemoData.conversations.first(), matchOrigin)
+                        },
+                        onBack = { screen = matchOrigin },
+                    )
+
+                    // Chats are full-screen: the inbox back arrow returns there,
+                    // and no bottom bar competes with the composer for space.
+                    Screen.Chat -> ChatScreen(
+                        initialMessages = activeConversation.messages,
+                        item = activeConversation.item ?: matchedLost,
+                        peerName = activeConversation.peerName,
+                        peerSubtitle = activeConversation.peerRole,
+                        peerOnline = activeConversation.peerOnline,
+                        onBack = { screen = chatOrigin },
+                    )
+
+                    Screen.Messages -> MessagesScreen(
                         conversations = DemoData.conversations,
                         onOpenChat = { conv -> openChat(conv, Screen.Messages) },
                     )
                 }
             }
         }
+
+        if (showBottomBar) {
+            BottomBar(
+                currentTab = screen,
+                underlineLeftPx = underlineLeft.value,
+                onWidthChange = { barWidthPx = it },
+                onHome = { screen = Screen.Feed },
+                onMessages = { screen = Screen.Messages },
+                onProfile = { screen = Screen.Profile },
+            )
+        }
     }
 }
 
-/** Feed/Messages/Profile shell with the centered bottom bar. */
-@Composable
-private fun MainShell(
-    currentTab: Screen,
-    onHome: () -> Unit,
-    onMessages: () -> Unit,
-    onProfile: () -> Unit,
-    content: @Composable () -> Unit,
-) {
-    Column(Modifier.fillMaxSize()) {
-        Box(Modifier.weight(1f)) { content() }
-        BottomBar(
-            currentTab = currentTab,
-            onHome = onHome,
-            onMessages = onMessages,
-            onProfile = onProfile,
-        )
-    }
-}
-
+/** The persistent bottom bar; the underline slides across tabs. */
 @Composable
 private fun BottomBar(
     currentTab: Screen,
+    underlineLeftPx: Float,
+    onWidthChange: (Float) -> Unit,
     onHome: () -> Unit,
     onMessages: () -> Unit,
     onProfile: () -> Unit,
 ) {
-    // The bar blends into the page: same background colour, hairline on top,
-    // selection marked by an animated underline instead of a filled pill.
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background)
+            .onSizeChanged { onWidthChange(it.width.toFloat().coerceAtLeast(1f)) },
     ) {
         Box(
             modifier = Modifier
@@ -333,6 +346,17 @@ private fun BottomBar(
                 .fillMaxWidth()
                 .height(1.dp)
                 .background(MaterialTheme.colorScheme.surfaceVariant),
+        )
+        // Sliding underline, owned by the root so it never resets.
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .offset {
+                    IntOffset(underlineLeftPx.roundToInt(), (-9).dp.roundToPx())
+                }
+                .size(36.dp, 3.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(MaterialTheme.colorScheme.primary),
         )
         Row(
             modifier = Modifier
@@ -344,7 +368,7 @@ private fun BottomBar(
             NavItem(
                 icon = Icons.Outlined.Home,
                 activeIcon = Icons.Filled.Home,
-                label = "Home",
+                label = tr(R.string.nav_home),
                 selected = currentTab == Screen.Feed,
                 onClick = onHome,
                 modifier = Modifier.weight(1f),
@@ -352,7 +376,7 @@ private fun BottomBar(
             NavItem(
                 icon = Icons.Outlined.Email,
                 activeIcon = Icons.Filled.Email,
-                label = "Chats",
+                label = tr(R.string.nav_chats),
                 selected = currentTab == Screen.Messages,
                 onClick = onMessages,
                 modifier = Modifier.weight(1f),
@@ -360,7 +384,7 @@ private fun BottomBar(
             NavItem(
                 icon = Icons.Outlined.Person,
                 activeIcon = Icons.Filled.Person,
-                label = "Profile",
+                label = tr(R.string.nav_profile),
                 selected = currentTab == Screen.Profile,
                 onClick = onProfile,
                 modifier = Modifier.weight(1f),
@@ -386,11 +410,6 @@ private fun NavItem(
         },
         label = "navTint",
     )
-    val underlineAlpha by animateFloatAsState(
-        targetValue = if (selected) 1f else 0f,
-        animationSpec = tween(220),
-        label = "navUnderline",
-    )
     Column(
         modifier = modifier.clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -407,15 +426,7 @@ private fun NavItem(
             style = MaterialTheme.typography.labelMedium,
             color = tint,
         )
-        Spacer(Modifier.height(5.dp))
-        // Short animated underline: the selection marker.
-        Box(
-            modifier = Modifier
-                .width(30.dp)
-                .height(3.dp)
-                .clip(RoundedCornerShape(2.dp))
-                .graphicsLayer { alpha = underlineAlpha }
-                .background(MaterialTheme.colorScheme.primary),
-        )
+        // Reserved space so labels sit at the same height in all states.
+        Spacer(Modifier.height(8.dp))
     }
 }

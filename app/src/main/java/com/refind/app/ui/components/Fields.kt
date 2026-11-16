@@ -1,6 +1,8 @@
 package com.refind.app.ui.components
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.refind.app.R
+import com.refind.app.ui.tr
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -33,14 +35,14 @@ fun PasswordField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    label: String = "Password",
+    label: String? = null,
 ) {
     var visible by rememberSaveable { mutableStateOf(false) }
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
-        label = { Text(label) },
+        label = { Text(label ?: tr(R.string.password)) },
         leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
         trailingIcon = {
             val image = if (visible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility

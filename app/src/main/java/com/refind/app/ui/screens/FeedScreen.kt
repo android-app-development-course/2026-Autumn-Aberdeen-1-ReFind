@@ -37,8 +37,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import com.refind.app.R
+import com.refind.app.ui.tr
+import androidx.compose.ui.unit.dp
 import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
 import com.refind.app.ui.components.ItemCard
@@ -140,13 +141,13 @@ private fun HeroBand(userName: String, modifier: Modifier = Modifier) {
         ) {
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = "Hi, $userName 👋",
+                    text = tr(R.string.feed_greeting, userName),
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    text = "Lost something? ReFind is already looking.",
+                    text = tr(R.string.feed_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.85f),
                 )
@@ -191,7 +192,7 @@ private fun SearchCard(modifier: Modifier = Modifier) {
         )
         Spacer(Modifier.width(10.dp))
         Text(
-            text = "Search lost & found…",
+            text = tr(R.string.search_hint),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.weight(1f),
