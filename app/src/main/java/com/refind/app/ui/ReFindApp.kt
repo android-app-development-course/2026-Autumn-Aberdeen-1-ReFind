@@ -6,6 +6,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -139,13 +141,14 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                 val from = depthOf(initialState)
                 val to = depthOf(targetState)
                 when {
-                    // Report is a modal: it slides up from the bottom.
+                    // Report is a modal: it slides up while the page below
+                    // dims and shrinks slightly in place (no sideways move).
                     targetState == Screen.Report ->
                         (slideInVertically(tween(380)) { it } + fadeIn(tween(380))) togetherWith
-                            (slideOutHorizontally(tween(380)) { -it / 6 } + fadeOut(tween(380)))
+                            (scaleOut(targetScale = 0.96f) + fadeOut(tween(320)))
 
                     initialState == Screen.Report ->
-                        (slideInHorizontally(tween(340)) { -it / 6 } + fadeIn(tween(340))) togetherWith
+                        (scaleIn(initialScale = 0.96f) + fadeIn(tween(300))) togetherWith
                             (slideOutVertically(tween(340)) { it } + fadeOut(tween(340)))
 
                     // Tab switch: cross-fade.
@@ -252,25 +255,16 @@ fun ReFindApp(modifier: Modifier = Modifier) {
 
                 // Chats opened from the inbox stay inside the app shell so
                 // the user can hop tabs without backing out first.
-                Screen.Chat -> MainShell(
-                    currentTab = if (chatOrigin == Screen.Messages) {
-                        Screen.Messages
-                    } else {
-                        Screen.Feed
-                    },
-                    onHome = { screen = Screen.Feed },
-                    onMessages = { screen = Screen.Messages },
-                    onProfile = { screen = Screen.Profile },
-                ) {
-                    ChatScreen(
-                        initialMessages = activeConversation.messages,
-                        item = activeConversation.item ?: matchedLost,
-                        peerName = activeConversation.peerName,
-                        peerSubtitle = activeConversation.peerRole,
-                        peerOnline = activeConversation.peerOnline,
-                        onBack = { screen = chatOrigin },
-                    )
-                }
+                // Chats are full-screen: the inbox back arrow returns there,
+                // and no bottom bar competes with the composer for space.
+                Screen.Chat -> ChatScreen(
+                    initialMessages = activeConversation.messages,
+                    item = activeConversation.item ?: matchedLost,
+                    peerName = activeConversation.peerName,
+                    peerSubtitle = activeConversation.peerRole,
+                    peerOnline = activeConversation.peerOnline,
+                    onBack = { screen = chatOrigin },
+                )
 
                 Screen.Messages -> MainShell(
                     currentTab = target,

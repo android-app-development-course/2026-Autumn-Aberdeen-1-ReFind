@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,7 +50,7 @@ fun MyReportsScreen(
     var selectedTab by rememberSaveable { mutableStateOf(ItemStatus.LOST) }
     val items = myReports.filter { it.status == selectedTab }
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize().navigationBarsPadding()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
