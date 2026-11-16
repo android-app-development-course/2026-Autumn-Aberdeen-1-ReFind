@@ -31,6 +31,7 @@ data class ItemReport(
     val status: ItemStatus,
     val colour: String,
     val reward: Int? = null,
+    val photoUri: String? = null,
     val reporter: String,
 )
 

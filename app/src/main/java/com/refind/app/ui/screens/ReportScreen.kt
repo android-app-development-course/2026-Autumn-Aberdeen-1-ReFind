@@ -14,6 +14,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -59,16 +61,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.refind.app.data.Category
 import com.refind.app.data.DemoData
 import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
+import com.refind.app.ui.components.ItemPhotoPicker
 import com.refind.app.ui.components.categoryIcon
 import com.refind.app.ui.components.pressScale
 
-private val COLOURS = listOf("Blue", "Black", "White", "Silver", "Orange", "Other")
+/** Name -> real swatch colour, so chips can show what they stand for. */
+private val COLOURS = listOf(
+    "Blue" to androidx.compose.ui.graphics.Color(0xFF2196F3),
+    "Black" to androidx.compose.ui.graphics.Color(0xFF212121),
+    "White" to androidx.compose.ui.graphics.Color(0xFFF5F5F5),
+    "Silver" to androidx.compose.ui.graphics.Color(0xFFC8C8C8),
+    "Orange" to androidx.compose.ui.graphics.Color(0xFFFF9800),
+    "Green" to androidx.compose.ui.graphics.Color(0xFF4CAF50),
+    "Red" to androidx.compose.ui.graphics.Color(0xFFF44336),
+    "Purple" to androidx.compose.ui.graphics.Color(0xFF9C27B0),
+    "Pink" to androidx.compose.ui.graphics.Color(0xFFEC407A),
+    "Yellow" to androidx.compose.ui.graphics.Color(0xFFFDD835),
+)
 private val TIMES = listOf("Just now", "1h ago", "Yesterday", "2 days ago")
 private val REWARDS = listOf(null, 5, 20)
 
@@ -88,6 +104,7 @@ fun ReportScreen(
     var category by remember { mutableStateOf<Category?>(null) }
     var title by rememberSaveable { mutableStateOf("") }
     var colour by rememberSaveable { mutableStateOf("") }
+    var photo by rememberSaveable { mutableStateOf<String?>(null) }
     var location by rememberSaveable { mutableStateOf("Main Library, 2F") }
     var timeAgo by rememberSaveable { mutableStateOf("Just now") }
     var reward by remember { mutableStateOf<Int?>(null) }
@@ -103,6 +120,7 @@ fun ReportScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .statusBarsPadding()
                 .padding(horizontal = 12.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -170,6 +188,8 @@ fun ReportScreen(
                         onTitle = { title = it },
                         colour = colour,
                         onColour = { colour = it },
+                        photoUri = photo,
+                        onPhoto = { photo = it },
                     )
 
                     2 -> WhereWhenStep(
@@ -214,6 +234,7 @@ fun ReportScreen(
                                 colour = colour,
                                 reward = reward,
                                 reporter = DemoData.USER_NAME,
+                                photoUri = photo,
                             ),
                         )
                     }
@@ -341,6 +362,8 @@ private fun ItemStep(
     onTitle: (String) -> Unit,
     colour: String,
     onColour: (String) -> Unit,
+    photoUri: String?,
+    onPhoto: (String?) -> Unit,
 ) {
     Text(
         text = "What is it?",
@@ -418,35 +441,69 @@ private fun ItemStep(
 
     Spacer(Modifier.height(18.dp))
     Text(
+        text = "ITEM PHOTO",
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Spacer(Modifier.height(10.dp))
+    ItemPhotoPicker(
+        photoUri = photoUri,
+        onPhotoChanged = onPhoto,
+    )
+
+    Spacer(Modifier.height(18.dp))
+    Text(
         text = "COLOUR",
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     Spacer(Modifier.height(10.dp))
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        COLOURS.forEach { c ->
-            val isSelected = colour == c
-            Box(
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        COLOURS.forEach { (name, swatch) ->
+            val isSelected = colour == name
+            // Selected chips take on the colour they represent; label and
+            // dot contrast flip based on the swatch's luminance.
+            val chipBg = if (isSelected) {
+                swatch
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
+            val textColor = if (isSelected) {
+                if (swatch.luminance() > 0.5f) {
+                    androidx.compose.ui.graphics.Color.Black
+                } else {
+                    androidx.compose.ui.graphics.Color.White
+                }
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            }
+            Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(
-                        if (isSelected) {
-                            MaterialTheme.colorScheme.primaryContainer
-                        } else {
-                            MaterialTheme.colorScheme.surfaceVariant
-                        },
-                    )
-                    .clickable { onColour(c) }
-                    .padding(horizontal = 14.dp, vertical = 9.dp),
+                    .background(chipBg)
+                    .clickable { onColour(name) }
+                    .padding(horizontal = 12.dp, vertical = 7.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clip(androidx.compose.foundation.shape.CircleShape)
+                        .background(swatch)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            shape = androidx.compose.foundation.shape.CircleShape,
+                        ),
+                )
+                Spacer(Modifier.width(7.dp))
                 Text(
-                    text = c,
+                    text = name,
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (isSelected) {
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
+                    color = textColor,
                 )
             }
         }
@@ -493,7 +550,10 @@ private fun WhereWhenStep(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     Spacer(Modifier.height(10.dp))
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
         TIMES.forEach { t ->
             val isSelected = timeAgo == t
             Box(
@@ -528,7 +588,10 @@ private fun WhereWhenStep(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     Spacer(Modifier.height(10.dp))
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         REWARDS.forEach { r ->
             val label = r?.let { "$it pts" } ?: "None"
             val isSelected = reward == r

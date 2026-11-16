@@ -112,6 +112,7 @@ fun ReFindApp(modifier: Modifier = Modifier) {
     // never on the match screen again.
     var matchOrigin by remember { mutableStateOf(Screen.Feed) }
     var chatOrigin by remember { mutableStateOf(Screen.Feed) }
+    var reportOrigin by remember { mutableStateOf(Screen.Feed) }
     var activeConversation by remember {
         mutableStateOf(DemoData.conversations.first())
     }
@@ -181,7 +182,10 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                         userName = DemoData.USER_NAME,
                         lostItems = lostReports,
                         foundItems = DemoData.foundItems,
-                        onNewReport = { screen = Screen.Report },
+                        onNewReport = {
+                            reportOrigin = Screen.Feed
+                            screen = Screen.Report
+                        },
                         onItemClick = {
                             detailItemId = it.id
                             screen = Screen.ItemDetail
@@ -207,7 +211,10 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     myReports = (lostReports + DemoData.foundItems)
                         .filter { it.reporter == DemoData.USER_NAME },
                     onBack = { screen = Screen.Profile },
-                    onNewReport = { screen = Screen.Report },
+                    onNewReport = {
+                        reportOrigin = Screen.MyReports
+                        screen = Screen.Report
+                    },
                     onItemClick = {
                         detailItemId = it.id
                         screen = Screen.ItemDetail
@@ -218,7 +225,7 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     onSubmitted = { newItem ->
                         lostReports = listOf(newItem) + lostReports
                     },
-                    onCancel = { screen = Screen.Feed },
+                    onCancel = { screen = reportOrigin },
                 )
 
                 Screen.ItemDetail -> detailItem?.let { item ->
@@ -239,7 +246,10 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     userName = DemoData.USER_NAME,
                     lostItems = lostReports,
                     foundItems = DemoData.foundItems,
-                    onNewReport = { screen = Screen.Report },
+                    onNewReport = {
+                        reportOrigin = Screen.Feed
+                        screen = Screen.Report
+                    },
                     onItemClick = {},
                 )
 

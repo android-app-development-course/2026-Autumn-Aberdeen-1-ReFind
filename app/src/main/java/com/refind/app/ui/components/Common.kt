@@ -6,6 +6,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -55,6 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -185,12 +188,23 @@ fun ItemCard(
                     .background(heroBrush),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(
-                    imageVector = categoryIcon(item.category),
-                    contentDescription = item.category.label,
-                    tint = heroTint,
-                    modifier = Modifier.size(36.dp),
-                )
+                // A real photo wins over the category tile when attached.
+                val photo = rememberUriImage(item.photoUri)
+                if (photo != null) {
+                    Image(
+                        bitmap = photo,
+                        contentDescription = item.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                } else {
+                    Icon(
+                        imageVector = categoryIcon(item.category),
+                        contentDescription = item.category.label,
+                        tint = heroTint,
+                        modifier = Modifier.size(36.dp),
+                    )
+                }
             }
             Spacer(Modifier.width(14.dp))
             Column(
