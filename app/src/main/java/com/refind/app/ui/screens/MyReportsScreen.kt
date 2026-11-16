@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,13 +46,14 @@ import com.refind.app.ui.components.StatusTabs
 fun MyReportsScreen(
     myReports: List<ItemReport>,
     onBack: () -> Unit,
+    onNewReport: () -> Unit,
     onItemClick: (ItemReport) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(ItemStatus.LOST) }
     val items = myReports.filter { it.status == selectedTab }
 
-    Column(modifier = modifier.fillMaxSize().navigationBarsPadding()) {
+    Column(modifier = modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,7 +71,15 @@ fun MyReportsScreen(
                 text = "My Reports",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
             )
+            IconButton(onClick = onNewReport) {
+                Icon(
+                    Icons.Outlined.Add,
+                    contentDescription = "New report",
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
         }
 
         Column(Modifier.padding(horizontal = 20.dp)) {

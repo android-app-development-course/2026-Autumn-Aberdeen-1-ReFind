@@ -207,6 +207,7 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     myReports = (lostReports + DemoData.foundItems)
                         .filter { it.reporter == DemoData.USER_NAME },
                     onBack = { screen = Screen.Profile },
+                    onNewReport = { screen = Screen.Report },
                     onItemClick = {
                         detailItemId = it.id
                         screen = Screen.ItemDetail
