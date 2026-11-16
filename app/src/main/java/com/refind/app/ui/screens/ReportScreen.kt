@@ -474,26 +474,16 @@ private fun ItemStep(
     ) {
         COLOURS.forEach { (name, swatch) ->
             val isSelected = colour == name
-            // Selected chips take on the colour they represent; label and
-            // dot contrast flip based on the swatch's luminance.
-            val chipBg = if (isSelected) {
-                swatch
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            }
-            val textColor = if (isSelected) {
-                if (swatch.luminance() > 0.5f) {
-                    androidx.compose.ui.graphics.Color.Black
-                } else {
-                    androidx.compose.ui.graphics.Color.White
-                }
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            }
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(chipBg)
+                    .background(
+                        if (isSelected) {
+                            MaterialTheme.colorScheme.primaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        },
+                    )
                     .clickable { onColour(name) }
                     .padding(horizontal = 12.dp, vertical = 7.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -513,7 +503,11 @@ private fun ItemStep(
                 Text(
                     text = name,
                     style = MaterialTheme.typography.labelLarge,
-                    color = textColor,
+                    color = if (isSelected) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
                 )
             }
         }

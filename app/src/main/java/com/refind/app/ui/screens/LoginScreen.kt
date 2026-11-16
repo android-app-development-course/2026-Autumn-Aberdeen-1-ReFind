@@ -101,7 +101,7 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(340.dp),
+                .height(304.dp),
         ) {
             // Language toggle pinned to the top-right corner.
             Row(
@@ -161,13 +161,12 @@ fun LoginScreen(
             }
         }
 
-        // Floating form sheet: pulled up so its rounded top overlaps the
-        // hero gradient — the corners reveal the teal behind them.
+        // Floating form sheet: fills the rest of the screen in white, its
+        // rounded top letting the hero gradient peek through the corners.
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, fill = true)
-                .offset(y = (-36).dp)
                 .graphicsLayer {
                     translationY = 60f * cardOffset.value
                     alpha = 1f - cardOffset.value * 0.4f
