@@ -60,9 +60,9 @@ import com.refind.app.data.DemoData
 import com.refind.app.data.ItemStatus
 import com.refind.app.data.ItemReport
 import com.refind.app.ui.components.categoryIcon
-import com.refind.app.ui.theme.Teal100
-import com.refind.app.ui.theme.Teal700
-import com.refind.app.ui.theme.Teal900
+import com.refind.app.ui.theme.Blue100
+import com.refind.app.ui.theme.Blue600
+import com.refind.app.ui.theme.Blue900
 import kotlin.math.roundToInt
 
 /** Profile tab: identity, animated stats, stacked report preview, settings. */
@@ -95,13 +95,13 @@ fun ProfileScreen(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
                 )
-                // Teal wash keeps the brand readable and blends into the page below.
+                // Blue wash keeps the brand readable and blends into the page below.
                 Box(
                     Modifier
                         .fillMaxSize()
                         .background(
                             Brush.verticalGradient(
-                                listOf(Teal700.copy(alpha = 0.55f), Teal700.copy(alpha = 0.35f)),
+                                listOf(Blue600.copy(alpha = 0.55f), Blue600.copy(alpha = 0.35f)),
                             ),
                         ),
                 )
@@ -177,13 +177,13 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             SettingsRow(
-                icon = { Icon(Icons.Outlined.Notifications, contentDescription = null, tint = Teal700) },
+                icon = { Icon(Icons.Outlined.Notifications, contentDescription = null, tint = Blue600) },
                 title = "Match notifications",
             ) {
                 Switch(checked = notificationsOn, onCheckedChange = { notificationsOn = it })
             }
             SettingsRow(
-                icon = { Icon(Icons.Outlined.Info, contentDescription = null, tint = Teal700) },
+                icon = { Icon(Icons.Outlined.Info, contentDescription = null, tint = Blue600) },
                 title = "About ReFind",
                 onClick = { showAboutDialog = true },
             ) {
@@ -296,7 +296,7 @@ private fun StatCard(    value: Int,
             Text(
                 text = (value * anim.value).roundToInt().toString(),
                 style = MaterialTheme.typography.headlineSmall,
-                color = Teal700,
+                color = Blue600,
             )
             Text(
                 text = label,

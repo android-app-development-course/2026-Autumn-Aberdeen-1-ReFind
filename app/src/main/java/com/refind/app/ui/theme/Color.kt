@@ -2,19 +2,21 @@ package com.refind.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ReFind brand palette (aligned with the business plan):
-// brand teal #0D7377, brand light #E8F2F2, neutral grey #5A6266.
-val Teal700 = Color(0xFF0D7377)
-val Teal600 = Color(0xFF148A8F)
-val Teal500 = Color(0xFF17979C)
-val Teal400 = Color(0xFF4FB3B8)
-val Teal100 = Color(0xFFE8F2F2)
-val Teal50 = Color(0xFFF4FAFA)
-val Teal900 = Color(0xFF083D40)
-val Teal900Dark = Color(0xFF062A2C)
+// ReFind palette: a clean tech-blue system (Tailwind blue scale) chosen over
+// the original teal — primary #2563EB, gradient partner #3B82F6, mist-blue
+// page background. Semantic accents: lost = warm orange, found = blue,
+// confirmed match = green.
+val Blue700 = Color(0xFF1D4ED8)
+val Blue600 = Color(0xFF2563EB)
+val Blue500 = Color(0xFF3B82F6)
+val Blue400 = Color(0xFF60A5FA)
+val Blue100 = Color(0xFFDBEAFE)
+val Blue50 = Color(0xFFEFF6FF)
+val Blue900 = Color(0xFF1E3A8A)
+val Blue900Dark = Color(0xFF0A1930)
 
-// Semantic accents: lost reports are warm, found reports carry the brand teal,
-// and a confirmed match is celebrated in green.
+// Semantic accents: lost reports are warm, found reports carry the brand
+// blue, and a confirmed match is celebrated in green.
 val LostOrange = Color(0xFFE8590C)
 val LostOrangeContainer = Color(0xFFFFF0E0)
 val LostOrangeDark = Color(0xFFFFA94D)
@@ -24,13 +26,13 @@ val MatchGreenContainer = Color(0xFFE3F5E8)
 val MatchGreenDark = Color(0xFF69DB7C)
 val MatchGreenContainerDark = Color(0xFF113B1C)
 
-val BackgroundLight = Color(0xFFEAF3F3)
+val BackgroundLight = Color(0xFFEEF4FF)
 val SurfaceLight = Color(0xFFFFFFFF)
-val SurfaceVariantLight = Color(0xFFE4EEEF)
+val SurfaceVariantLight = Color(0xFFE2ECFD)
 
-val BackgroundDark = Color(0xFF0C1617)
-val SurfaceDark = Color(0xFF122021)
-val SurfaceVariantDark = Color(0xFF1B2F31)
+val BackgroundDark = Color(0xFF0B1220)
+val SurfaceDark = Color(0xFF101B2C)
+val SurfaceVariantDark = Color(0xFF1B2A44)
 
-val TextPrimary = Color(0xFF10201F)
-val TextSecondary = Color(0xFF5A6266)
+val TextPrimary = Color(0xFF0F172A)
+val TextSecondary = Color(0xFF64748B)

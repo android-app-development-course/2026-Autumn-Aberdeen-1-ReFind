@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -56,9 +57,9 @@ import com.refind.app.data.DemoData
 import com.refind.app.data.ItemReport
 import com.refind.app.ui.components.categoryIcon
 import com.refind.app.ui.components.staggerIn
-import com.refind.app.ui.theme.Teal100
-import com.refind.app.ui.theme.Teal700
-import com.refind.app.ui.theme.Teal900
+import com.refind.app.ui.theme.Blue100
+import com.refind.app.ui.theme.Blue600
+import com.refind.app.ui.theme.Blue900
 
 /** Verification chat between the owner and the finder. */
 @Composable
@@ -83,7 +84,7 @@ fun ChatScreen(
         }
     }
 
-    Column(modifier = modifier.fillMaxSize().imePadding()) {
+    Column(modifier = modifier.fillMaxSize().statusBarsPadding().imePadding()) {
         // Header
         Row(
             modifier = Modifier
@@ -150,34 +151,34 @@ fun ChatScreen(
                     Icon(
                         categoryIcon(item.category),
                         contentDescription = null,
-                        tint = Teal700,
+                        tint = Blue600,
                         modifier = Modifier.size(16.dp),
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = "Chatting about: ${item.title} (your report)",
                         style = MaterialTheme.typography.labelMedium,
-                        color = Teal900,
+                        color = Blue900,
                         modifier = Modifier.weight(1f),
                     )
                     Text(
                         text = "${(DemoData.MATCH_CONFIDENCE * 100).toInt()}%",
                         style = MaterialTheme.typography.labelMedium,
-                        color = Teal700,
+                        color = Blue600,
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Outlined.Star,
                         contentDescription = null,
-                        tint = Teal700,
+                        tint = Blue600,
                         modifier = Modifier.size(16.dp),
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = "Safe handover point: Library Cafe, 3:00 PM",
                         style = MaterialTheme.typography.labelMedium,
-                        color = Teal900,
+                        color = Blue900,
                     )
                 }
             }
@@ -302,13 +303,13 @@ private fun TheirBubble(message: ChatMessage, index: Int) {
         Bubble(
             text = message.text,
             container = if (isVerification) {
-                Teal100
+                Blue100
             } else {
                 MaterialTheme.colorScheme.surfaceVariant
             },
-            content = if (isVerification) Teal900 else MaterialTheme.colorScheme.onSurface,
+            content = if (isVerification) Blue900 else MaterialTheme.colorScheme.onSurface,
             leadingIcon = if (isVerification) {
-                { Icon(Icons.Outlined.Lock, contentDescription = null, tint = Teal700, modifier = Modifier.size(14.dp)) }
+                { Icon(Icons.Outlined.Lock, contentDescription = null, tint = Blue600, modifier = Modifier.size(14.dp)) }
             } else {
                 null
             },

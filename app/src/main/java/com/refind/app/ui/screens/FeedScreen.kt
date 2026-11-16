@@ -45,8 +45,8 @@ import com.refind.app.ui.components.ItemCard
 import com.refind.app.ui.components.NewReportBanner
 import com.refind.app.ui.components.StatusTabs
 import com.refind.app.ui.components.staggerIn
-import com.refind.app.ui.theme.Teal400
-import com.refind.app.ui.theme.Teal700
+import com.refind.app.ui.theme.Blue400
+import com.refind.app.ui.theme.Blue600
 
 /** Hero band height; the search card overlaps its bottom edge. */
 private val HeroBandHeight = 172.dp
@@ -120,7 +120,7 @@ fun FeedScreen(
     }
 }
 
-/** Teal gradient band with the greeting and a soft decorative circle. */
+/** Blue gradient band with the greeting and a soft decorative circle. */
 @Composable
 private fun HeroBand(userName: String, modifier: Modifier = Modifier) {
     Box(
@@ -129,7 +129,7 @@ private fun HeroBand(userName: String, modifier: Modifier = Modifier) {
             .height(HeroBandHeight)
             .statusBarsPadding()
             .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp))
-            .background(Brush.linearGradient(listOf(Teal700, Teal400))),
+            .background(Brush.linearGradient(listOf(Blue600, Blue400))),
     ) {
         Row(
             modifier = Modifier

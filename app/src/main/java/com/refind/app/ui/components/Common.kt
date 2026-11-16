@@ -63,10 +63,10 @@ import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
 import com.refind.app.ui.theme.LostOrange
 import com.refind.app.ui.theme.LostOrangeContainer
-import com.refind.app.ui.theme.Teal100
-import com.refind.app.ui.theme.Teal500
-import com.refind.app.ui.theme.Teal700
-import com.refind.app.ui.theme.Teal900
+import com.refind.app.ui.theme.Blue100
+import com.refind.app.ui.theme.Blue500
+import com.refind.app.ui.theme.Blue600
+import com.refind.app.ui.theme.Blue900
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -119,7 +119,7 @@ fun StatusBadge(status: ItemStatus, modifier: Modifier = Modifier) {
     val (bg, fg, label) = if (status == ItemStatus.LOST) {
         Triple(LostOrangeContainer, LostOrange, "LOST")
     } else {
-        Triple(Teal100, Teal700, "FOUND")
+        Triple(Blue100, Blue600, "FOUND")
     }
     Row(
         modifier = modifier
@@ -158,10 +158,10 @@ fun ItemCard(
         colors = if (item.status == ItemStatus.LOST) {
             listOf(Color(0xFFFFE9D6), Color(0xFFFFD6AE))
         } else {
-            listOf(Color(0xFFD9EDF1), Color(0xFFBCDfE4))
+            listOf(Color(0xFFDBEAFE), Color(0xFFBFDBFE))
         },
     )
-    val heroTint = if (item.status == ItemStatus.LOST) LostOrange else Teal700
+    val heroTint = if (item.status == ItemStatus.LOST) LostOrange else Blue600
 
     Card(
         onClick = onClick,
@@ -324,7 +324,7 @@ fun NewReportBanner(
                 .fillMaxWidth()
                 .background(
                     Brush.linearGradient(
-                        listOf(Teal700, Color(0xFF35AEB4)),
+                        listOf(Blue600, Color(0xFF3B82F6)),
                         start = androidx.compose.ui.geometry.Offset(0f, 0f),
                         end = androidx.compose.ui.geometry.Offset(
                             Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
@@ -430,7 +430,7 @@ fun StatusTabs(
                         modifier = Modifier
                             .size(7.dp)
                             .clip(CircleShape)
-                            .background(if (status == ItemStatus.LOST) LostOrange else Teal700),
+                            .background(if (status == ItemStatus.LOST) LostOrange else Blue600),
                     )
                     Spacer(Modifier.width(8.dp))
                 }

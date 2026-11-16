@@ -58,8 +58,8 @@ import com.refind.app.ui.components.categoryIcon
 import com.refind.app.ui.theme.LostOrangeContainer
 import com.refind.app.ui.theme.MatchGreen
 import com.refind.app.ui.theme.MatchGreenContainer
-import com.refind.app.ui.theme.Teal100
-import com.refind.app.ui.theme.Teal700
+import com.refind.app.ui.theme.Blue100
+import com.refind.app.ui.theme.Blue600
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -202,14 +202,14 @@ fun MatchFoundScreen(
             Canvas(modifier = Modifier.size(170.dp)) {
                 val stroke = 14.dp.toPx()
                 drawArc(
-                    color = Teal100,
+                    color = Blue100,
                     startAngle = -90f,
                     sweepAngle = 360f,
                     useCenter = false,
                     style = Stroke(width = stroke, cap = StrokeCap.Round),
                 )
                 drawArc(
-                    color = Teal700,
+                    color = Blue600,
                     startAngle = -90f,
                     sweepAngle = 360f * ring.value,
                     useCenter = false,
@@ -306,13 +306,13 @@ private fun MatchSideCard(
                 .fillMaxWidth()
                 .height(92.dp)
                 .clip(RoundedCornerShape(18.dp))
-                .background(if (isLost) LostOrangeContainer else Teal100),
+                .background(if (isLost) LostOrangeContainer else Blue100),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 categoryIcon(item.category),
                 contentDescription = item.category.label,
-                tint = if (isLost) com.refind.app.ui.theme.LostOrange else Teal700,
+                tint = if (isLost) com.refind.app.ui.theme.LostOrange else Blue600,
                 modifier = Modifier.size(36.dp),
             )
         }

@@ -49,8 +49,8 @@ import com.refind.app.ui.components.categoryIcon
 import com.refind.app.ui.components.staggerIn
 import com.refind.app.ui.theme.LostOrange
 import com.refind.app.ui.theme.LostOrangeContainer
-import com.refind.app.ui.theme.Teal100
-import com.refind.app.ui.theme.Teal700
+import com.refind.app.ui.theme.Blue100
+import com.refind.app.ui.theme.Blue600
 
 /** Detail page for a single report. The story match exposes the match card. */
 @Composable
@@ -65,7 +65,7 @@ fun ItemDetailScreen(
     val isLost = item.status == ItemStatus.LOST
     val heroBrush = Brush.verticalGradient(
         listOf(
-            if (isLost) LostOrangeContainer else Teal100,
+            if (isLost) LostOrangeContainer else Blue100,
             MaterialTheme.colorScheme.background,
         ),
     )
@@ -109,7 +109,7 @@ fun ItemDetailScreen(
             Icon(
                 categoryIcon(item.category),
                 contentDescription = item.category.label,
-                tint = if (isLost) LostOrange else Teal700,
+                tint = if (isLost) LostOrange else Blue600,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(top = 26.dp)
