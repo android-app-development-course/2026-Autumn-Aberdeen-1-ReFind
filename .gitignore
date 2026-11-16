@@ -10,6 +10,9 @@ local.properties
 .DS_Store
 *.log
 
+# Temp File
+/tmp/
+
 # Android Studio generated files and folders
 captures/
 .externalNativeBuild/
