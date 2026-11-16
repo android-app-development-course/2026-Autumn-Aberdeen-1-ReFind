@@ -24,9 +24,9 @@ val MatchGreenContainer = Color(0xFFE3F5E8)
 val MatchGreenDark = Color(0xFF69DB7C)
 val MatchGreenContainerDark = Color(0xFF113B1C)
 
-val BackgroundLight = Color(0xFFF6FAFA)
+val BackgroundLight = Color(0xFFEAF3F3)
 val SurfaceLight = Color(0xFFFFFFFF)
-val SurfaceVariantLight = Color(0xFFECF3F3)
+val SurfaceVariantLight = Color(0xFFE4EEEF)
 
 val BackgroundDark = Color(0xFF0C1617)
 val SurfaceDark = Color(0xFF122021)

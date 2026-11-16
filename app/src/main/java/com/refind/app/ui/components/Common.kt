@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -154,9 +155,9 @@ fun ItemCard(
     val interaction = remember { MutableInteractionSource() }
     val heroBrush = Brush.linearGradient(
         colors = if (item.status == ItemStatus.LOST) {
-            listOf(LostOrangeContainer, Color(0xFFFFF7EE))
+            listOf(Color(0xFFFFE9D6), Color(0xFFFFD6AE))
         } else {
-            listOf(Teal100, Color(0xFFF7FCFC))
+            listOf(Color(0xFFD9EDF1), Color(0xFFBCDfE4))
         },
     )
     val heroTint = if (item.status == ItemStatus.LOST) LostOrange else Teal700
@@ -170,7 +171,7 @@ fun ItemCard(
         interactionSource = interaction,
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
@@ -179,7 +180,7 @@ fun ItemCard(
             Box(
                 modifier = Modifier
                     .size(72.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(18.dp))
                     .background(heroBrush),
                 contentAlignment = Alignment.Center,
             ) {
@@ -187,7 +188,7 @@ fun ItemCard(
                     imageVector = categoryIcon(item.category),
                     contentDescription = item.category.label,
                     tint = heroTint,
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier.size(36.dp),
                 )
             }
             Spacer(Modifier.width(14.dp))
@@ -318,15 +319,24 @@ fun MatchBanner(
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    Brush.linearGradient(listOf(Teal700, Color(0xFF2FA7AD))),
+                    Brush.linearGradient(
+                        listOf(Teal700, Color(0xFF35AEB4)),
+                        start = androidx.compose.ui.geometry.Offset(0f, 0f),
+                        end = androidx.compose.ui.geometry.Offset(
+                            Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+                        ),
+                    ),
                 )
                 .padding(18.dp),
-            verticalAlignment = Alignment.CenterVertically,
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
             Icon(
                 Icons.Outlined.AutoAwesome,
                 contentDescription = null,
@@ -352,6 +362,7 @@ fun MatchBanner(
                 tint = Color.White.copy(alpha = 0.9f),
                 modifier = Modifier.size(24.dp),
             )
+            }
         }
     }
 }
