@@ -215,14 +215,35 @@ private fun MainShell(
     onReport: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    Column(Modifier.fillMaxSize()) {
-        Box(Modifier.weight(1f)) { content() }
-        BottomBar(
-            currentTab = currentTab,
-            onHome = onHome,
-            onProfile = onProfile,
-            onReport = onReport,
-        )
+    // The report button lives above the shell (not inside the bar) so the
+    // Surface's clipping can't cut off the half that floats over the content.
+    Box(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            Box(Modifier.weight(1f)) { content() }
+            BottomBar(
+                currentTab = currentTab,
+                onHome = onHome,
+                onProfile = onProfile,
+            )
+        }
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = (-39).dp)
+                .shadow(10.dp, CircleShape)
+                .size(58.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primary)
+                .clickable(onClick = onReport),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                Icons.Outlined.Add,
+                contentDescription = "New report",
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(28.dp),
+            )
+        }
     }
 }
 
@@ -231,57 +252,32 @@ private fun BottomBar(
     currentTab: Screen,
     onHome: () -> Unit,
     onProfile: () -> Unit,
-    onReport: () -> Unit,
 ) {
     Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 6.dp) {
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(68.dp),
+                .height(68.dp)
+                .padding(horizontal = 36.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 36.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                NavItem(
-                    icon = Icons.Outlined.Home,
-                    activeIcon = Icons.Filled.Home,
-                    label = "Home",
-                    selected = currentTab == Screen.Feed,
-                    onClick = onHome,
-                    modifier = Modifier.weight(1f),
-                )
-                Spacer(Modifier.weight(1f))
-                NavItem(
-                    icon = Icons.Outlined.Person,
-                    activeIcon = Icons.Filled.Person,
-                    label = "Profile",
-                    selected = currentTab == Screen.Profile,
-                    onClick = onProfile,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-            // Raised report button
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = (-22).dp)
-                    .shadow(10.dp, CircleShape)
-                    .size(58.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .clickable(onClick = onReport),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    Icons.Outlined.Add,
-                    contentDescription = "New report",
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(28.dp),
-                )
-            }
+            NavItem(
+                icon = Icons.Outlined.Home,
+                activeIcon = Icons.Filled.Home,
+                label = "Home",
+                selected = currentTab == Screen.Feed,
+                onClick = onHome,
+                modifier = Modifier.weight(1f),
+            )
+            Spacer(Modifier.weight(1f))
+            NavItem(
+                icon = Icons.Outlined.Person,
+                activeIcon = Icons.Filled.Person,
+                label = "Profile",
+                selected = currentTab == Screen.Profile,
+                onClick = onProfile,
+                modifier = Modifier.weight(1f),
+            )
         }
     }
 }
