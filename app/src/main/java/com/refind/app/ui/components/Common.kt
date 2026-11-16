@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -146,6 +147,7 @@ fun ItemCard(
     modifier: Modifier = Modifier,
     index: Int = 0,
     animateIn: Boolean = true,
+    isMine: Boolean = false,
 ) {
     val interaction = remember { MutableInteractionSource() }
     val heroBrush = Brush.linearGradient(
@@ -193,6 +195,10 @@ fun ItemCard(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     StatusBadge(item.status)
+                    if (isMine) {
+                        Spacer(Modifier.width(6.dp))
+                        MineChip()
+                    }
                     if (item.reward != null) {
                         Spacer(Modifier.width(6.dp))
                         RewardChip(amount = item.reward)
@@ -243,6 +249,28 @@ fun ItemCard(
                 modifier = Modifier.size(20.dp),
             )
         }
+    }
+}
+
+/** Small outlined "YOU" chip marking the viewer's own reports in the feed. */
+@Composable
+fun MineChip(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.Transparent)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.55f),
+                shape = RoundedCornerShape(8.dp),
+            )
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+    ) {
+        Text(
+            text = "YOU",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary,
+        )
     }
 }
 

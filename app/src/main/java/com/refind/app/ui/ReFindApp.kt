@@ -172,7 +172,8 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     onReport = { screen = Screen.Report },
                 ) {
                     ProfileScreen(
-                        myReports = lostReports,
+                        myReports = (lostReports + DemoData.foundItems)
+                            .filter { it.reporter == DemoData.USER_NAME },
                         onSignOut = { screen = Screen.Login },
                     )
                 }

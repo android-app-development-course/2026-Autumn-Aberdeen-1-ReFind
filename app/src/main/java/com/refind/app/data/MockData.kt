@@ -4,6 +4,9 @@ package com.refind.app.data
  * Demo data for the phase-2 UI prototype. Everything is in-memory and
  * hand-written to tell one coherent campus story: Peter loses his water
  * bottle, ReFind matches it with a finder's report, they verify and chat.
+ *
+ * The feed mixes reports from the whole community (Peter's own entries are
+ * flagged "YOU" in the UI); the profile lists only Peter's own reports.
  */
 
 enum class ItemStatus { LOST, FOUND }
@@ -42,6 +45,7 @@ data class ChatMessage(
 object DemoData {
     const val USER_NAME = "Peter"
 
+    /** Community lost reports — Peter's own two plus other students'. */
     val lostItems = listOf(
         ItemReport(
             id = 1,
@@ -67,26 +71,27 @@ object DemoData {
         ),
         ItemReport(
             id = 3,
-            title = "Car keys, panda charm",
-            category = Category.KEYS,
-            location = "Parking Lot B",
+            title = "Pink umbrella",
+            category = Category.OTHER,
+            location = "West Hall entrance",
             timeAgo = "Yesterday",
             status = ItemStatus.LOST,
-            colour = "Silver",
-            reporter = USER_NAME,
+            colour = "Pink",
+            reporter = "Sara",
         ),
         ItemReport(
             id = 4,
-            title = "Silver watch",
-            category = Category.OTHER,
-            location = "University Gym",
+            title = "Laptop bag, grey",
+            category = Category.BAG,
+            location = "Lecture Hall B",
             timeAgo = "2 days ago",
             status = ItemStatus.LOST,
-            colour = "Silver",
-            reporter = USER_NAME,
+            colour = "Grey",
+            reporter = "Tom",
         ),
     )
 
+    /** Community found reports from other students. */
     val foundItems = listOf(
         ItemReport(
             id = 11,
@@ -120,13 +125,13 @@ object DemoData {
         ),
         ItemReport(
             id = 14,
-            title = "Transparent umbrella",
-            category = Category.OTHER,
+            title = "Set of keys with strap",
+            category = Category.KEYS,
             location = "Main Gate",
             timeAgo = "Yesterday",
             status = ItemStatus.FOUND,
-            colour = "Clear",
-            reporter = "Amy",
+            colour = "Silver",
+            reporter = "Ben",
         ),
     )
 

@@ -145,6 +145,7 @@ fun FeedScreen(
                 item = item,
                 onClick = { onItemClick(item) },
                 index = index + 2,
+                isMine = item.reporter == userName,
             )
         }
     }
