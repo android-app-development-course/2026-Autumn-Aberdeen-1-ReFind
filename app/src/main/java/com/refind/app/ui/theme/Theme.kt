@@ -8,15 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val LightColors = lightColorScheme(
-    primary = Blue600,
+    primary = BrandPrimary,
     onPrimary = SurfaceLight,
-    primaryContainer = Blue100,
-    onPrimaryContainer = Blue900,
-    secondary = Blue700,
+    primaryContainer = BrandContainer,
+    onPrimaryContainer = BrandInk,
+    secondary = BrandDeep,
     onSecondary = SurfaceLight,
-    secondaryContainer = Blue50,
-    onSecondaryContainer = Blue900,
-    tertiary = Blue400,
+    secondaryContainer = BrandMist,
+    onSecondaryContainer = BrandInk,
+    tertiary = BrandBright,
     background = BackgroundLight,
     onBackground = TextPrimary,
     surface = SurfaceLight,
@@ -30,21 +30,21 @@ private val LightColors = lightColorScheme(
 )
 
 private val DarkColors = darkColorScheme(
-    primary = Blue400,
-    onPrimary = Blue900Dark,
-    primaryContainer = Color(0xFF0F4144),
-    onPrimaryContainer = Color(0xFFB8E4E6),
-    secondary = Blue500,
-    onSecondary = Blue900Dark,
+    primary = BrandLight,
+    onPrimary = BrandNight,
+    primaryContainer = Color(0xFF14524A),
+    onPrimaryContainer = BrandContainer,
+    secondary = BrandBright,
+    onSecondary = BrandNight,
     secondaryContainer = SurfaceVariantDark,
-    onSecondaryContainer = Color(0xFFB8E4E6),
-    tertiary = Blue500,
+    onSecondaryContainer = BrandContainer,
+    tertiary = BrandBright,
     background = BackgroundDark,
-    onBackground = Color(0xFFDDEAEA),
+    onBackground = Color(0xFFD9EAE4),
     surface = SurfaceDark,
-    onSurface = Color(0xFFDDEAEA),
+    onSurface = Color(0xFFD9EAE4),
     surfaceVariant = SurfaceVariantDark,
-    onSurfaceVariant = Color(0xFF93A7A8),
+    onSurfaceVariant = Color(0xFF8FB0A6),
     error = Color(0xFFFF8787),
     errorContainer = Color(0xFF4A1010),
     onError = Color(0xFF2B0505),
@@ -56,7 +56,7 @@ fun ReFindTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    // Brand teal stays consistent across devices: dynamic color is off.
+    // Brand palette stays consistent across devices: dynamic color is off.
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
         typography = Typography,

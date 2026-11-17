@@ -67,12 +67,12 @@ import com.refind.app.ui.tr
 import com.refind.app.data.Category
 import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
-import com.refind.app.ui.theme.LostOrange
-import com.refind.app.ui.theme.LostOrangeContainer
-import com.refind.app.ui.theme.Blue100
-import com.refind.app.ui.theme.Blue500
-import com.refind.app.ui.theme.Blue600
-import com.refind.app.ui.theme.Blue900
+import com.refind.app.ui.theme.WarningAmber
+import com.refind.app.ui.theme.WarningAmberContainer
+import com.refind.app.ui.theme.BrandContainer
+import com.refind.app.ui.theme.BrandBright
+import com.refind.app.ui.theme.BrandPrimary
+import com.refind.app.ui.theme.BrandInk
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -123,9 +123,9 @@ fun Modifier.staggerIn(index: Int, stepMs: Long = 70L): Modifier = composed {
 @Composable
 fun StatusBadge(status: ItemStatus, modifier: Modifier = Modifier) {
     val (bg, fg, label) = if (status == ItemStatus.LOST) {
-        Triple(LostOrangeContainer, LostOrange, tr(R.string.status_lost))
+        Triple(WarningAmberContainer, WarningAmber, tr(R.string.status_lost))
     } else {
-        Triple(Blue100, Blue600, tr(R.string.status_found))
+        Triple(BrandContainer, BrandPrimary, tr(R.string.status_found))
     }
     Row(
         modifier = modifier
@@ -164,10 +164,10 @@ fun ItemCard(
         colors = if (item.status == ItemStatus.LOST) {
             listOf(Color(0xFFFFE9D6), Color(0xFFFFD6AE))
         } else {
-            listOf(Color(0xFFE0EDFD), Color(0xFFCBDFFB))
+            listOf(Color(0xFFD8F3EC), Color(0xFFC2E8DC))
         },
     )
-    val heroTint = if (item.status == ItemStatus.LOST) LostOrange else Blue600
+    val heroTint = if (item.status == ItemStatus.LOST) WarningAmber else BrandPrimary
 
     Card(
         onClick = onClick,
@@ -341,7 +341,7 @@ fun NewReportBanner(
                 .fillMaxWidth()
                 .background(
                     Brush.linearGradient(
-                        listOf(Blue600, Color(0xFF60A5FA)),
+                        listOf(BrandPrimary, BrandBright),
                         start = androidx.compose.ui.geometry.Offset(0f, 0f),
                         end = androidx.compose.ui.geometry.Offset(
                             Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
@@ -447,7 +447,7 @@ fun StatusTabs(
                         modifier = Modifier
                             .size(7.dp)
                             .clip(CircleShape)
-                            .background(if (status == ItemStatus.LOST) LostOrange else Blue600),
+                            .background(if (status == ItemStatus.LOST) WarningAmber else BrandPrimary),
                     )
                     Spacer(Modifier.width(8.dp))
                 }

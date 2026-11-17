@@ -58,9 +58,9 @@ import com.refind.app.data.DemoData
 import com.refind.app.data.ItemReport
 import com.refind.app.ui.components.categoryIcon
 import com.refind.app.ui.components.staggerIn
-import com.refind.app.ui.theme.Blue100
-import com.refind.app.ui.theme.Blue600
-import com.refind.app.ui.theme.Blue900
+import com.refind.app.ui.theme.BrandContainer
+import com.refind.app.ui.theme.BrandPrimary
+import com.refind.app.ui.theme.BrandInk
 
 /** Verification chat between the owner and the finder. */
 @Composable
@@ -152,34 +152,34 @@ fun ChatScreen(
                     Icon(
                         categoryIcon(item.category),
                         contentDescription = null,
-                        tint = Blue600,
+                        tint = BrandPrimary,
                         modifier = Modifier.size(16.dp),
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = tr(R.string.chatting_about, item.title),
                         style = MaterialTheme.typography.labelMedium,
-                        color = Blue900,
+                        color = BrandInk,
                         modifier = Modifier.weight(1f),
                     )
                     Text(
                         text = "${(DemoData.MATCH_CONFIDENCE * 100).toInt()}%",
                         style = MaterialTheme.typography.labelMedium,
-                        color = Blue600,
+                        color = BrandPrimary,
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Outlined.Star,
                         contentDescription = null,
-                        tint = Blue600,
+                        tint = BrandPrimary,
                         modifier = Modifier.size(16.dp),
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = tr(R.string.safe_handover),
                         style = MaterialTheme.typography.labelMedium,
-                        color = Blue900,
+                        color = BrandInk,
                     )
                 }
             }
@@ -304,13 +304,13 @@ private fun TheirBubble(message: ChatMessage, index: Int) {
         Bubble(
             text = message.text,
             container = if (isVerification) {
-                Blue100
+                BrandContainer
             } else {
                 MaterialTheme.colorScheme.surfaceVariant
             },
-            content = if (isVerification) Blue900 else MaterialTheme.colorScheme.onSurface,
+            content = if (isVerification) BrandInk else MaterialTheme.colorScheme.onSurface,
             leadingIcon = if (isVerification) {
-                { Icon(Icons.Outlined.Lock, contentDescription = null, tint = Blue600, modifier = Modifier.size(14.dp)) }
+                { Icon(Icons.Outlined.Lock, contentDescription = null, tint = BrandPrimary, modifier = Modifier.size(14.dp)) }
             } else {
                 null
             },

@@ -57,11 +57,11 @@ import com.refind.app.ui.tr
 import com.refind.app.data.ItemReport
 import com.refind.app.ui.components.StatusBadge
 import com.refind.app.ui.components.categoryIcon
-import com.refind.app.ui.theme.LostOrangeContainer
-import com.refind.app.ui.theme.MatchGreen
-import com.refind.app.ui.theme.MatchGreenContainer
-import com.refind.app.ui.theme.Blue100
-import com.refind.app.ui.theme.Blue600
+import com.refind.app.ui.theme.WarningAmberContainer
+import com.refind.app.ui.theme.SuccessGreen
+import com.refind.app.ui.theme.SuccessGreenContainer
+import com.refind.app.ui.theme.BrandContainer
+import com.refind.app.ui.theme.BrandPrimary
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -182,7 +182,7 @@ fun MatchFoundScreen(
                         scaleY = t
                         alpha = t
                     }
-                    .background(MatchGreen, CircleShape),
+                    .background(SuccessGreen, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -209,14 +209,14 @@ fun MatchFoundScreen(
             Canvas(modifier = Modifier.size(170.dp)) {
                 val stroke = 14.dp.toPx()
                 drawArc(
-                    color = Blue100,
+                    color = BrandContainer,
                     startAngle = -90f,
                     sweepAngle = 360f,
                     useCenter = false,
                     style = Stroke(width = stroke, cap = StrokeCap.Round),
                 )
                 drawArc(
-                    color = Blue600,
+                    color = BrandPrimary,
                     startAngle = -90f,
                     sweepAngle = 360f * ring.value,
                     useCenter = false,
@@ -313,13 +313,13 @@ private fun MatchSideCard(
                 .fillMaxWidth()
                 .height(92.dp)
                 .clip(RoundedCornerShape(18.dp))
-                .background(if (isLost) LostOrangeContainer else Blue100),
+                .background(if (isLost) WarningAmberContainer else BrandContainer),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 categoryIcon(item.category),
                 contentDescription = item.category.label,
-                tint = if (isLost) com.refind.app.ui.theme.LostOrange else Blue600,
+                tint = if (isLost) com.refind.app.ui.theme.WarningAmber else BrandPrimary,
                 modifier = Modifier.size(36.dp),
             )
         }
@@ -360,14 +360,14 @@ private fun FactorChip(
                 alpha = (appear.value * 2).coerceAtMost(1f)
             }
             .clip(RoundedCornerShape(12.dp))
-            .background(MatchGreenContainer)
+            .background(SuccessGreenContainer)
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             Icons.Outlined.Check,
             contentDescription = null,
-            tint = MatchGreen,
+            tint = SuccessGreen,
             modifier = Modifier.size(14.dp),
         )
         Spacer(Modifier.width(6.dp))

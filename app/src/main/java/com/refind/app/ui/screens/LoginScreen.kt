@@ -137,7 +137,7 @@ fun LoginScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    listOf(MaterialTheme.colorScheme.primary, Color(0xFF5C9CF8)),
+                    listOf(MaterialTheme.colorScheme.primary, Color(0xFF3FAE9F)),
                 ),
             ),
     ) {

@@ -64,9 +64,9 @@ import com.refind.app.data.ItemStatus
 import com.refind.app.ui.AppLanguage
 import com.refind.app.data.ItemReport
 import com.refind.app.ui.components.categoryIcon
-import com.refind.app.ui.theme.Blue100
-import com.refind.app.ui.theme.Blue600
-import com.refind.app.ui.theme.Blue900
+import com.refind.app.ui.theme.BrandContainer
+import com.refind.app.ui.theme.BrandPrimary
+import com.refind.app.ui.theme.BrandInk
 import kotlin.math.roundToInt
 
 /** Profile tab: identity, animated stats, stacked report preview, settings. */
@@ -110,7 +110,7 @@ fun ProfileScreen(
                         .fillMaxSize()
                         .background(
                             Brush.verticalGradient(
-                                listOf(Blue600.copy(alpha = 0.55f), Blue600.copy(alpha = 0.35f)),
+                                listOf(BrandPrimary.copy(alpha = 0.55f), BrandPrimary.copy(alpha = 0.35f)),
                             ),
                         ),
                 )
@@ -186,13 +186,13 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             SettingsRow(
-                icon = { Icon(Icons.Outlined.Notifications, contentDescription = null, tint = Blue600) },
+                icon = { Icon(Icons.Outlined.Notifications, contentDescription = null, tint = BrandPrimary) },
                 title = tr(R.string.match_notifications),
             ) {
                 Switch(checked = notificationsOn, onCheckedChange = { notificationsOn = it })
             }
             SettingsRow(
-                icon = { Icon(Icons.Outlined.Info, contentDescription = null, tint = Blue600) },
+                icon = { Icon(Icons.Outlined.Info, contentDescription = null, tint = BrandPrimary) },
                 title = tr(R.string.about_refind),
                 onClick = { showAboutDialog = true },
             ) {
@@ -203,7 +203,7 @@ fun ProfileScreen(
                 )
             }
             SettingsRow(
-                icon = { Icon(Icons.Outlined.Language, contentDescription = null, tint = Blue600) },
+                icon = { Icon(Icons.Outlined.Language, contentDescription = null, tint = BrandPrimary) },
                 title = tr(R.string.language),
                 onClick = { showLanguageDialog = true },
             ) {
@@ -359,7 +359,7 @@ private fun StatCard(    value: Int,
             Text(
                 text = (value * anim.value).roundToInt().toString(),
                 style = MaterialTheme.typography.headlineSmall,
-                color = Blue600,
+                color = BrandPrimary,
             )
             Text(
                 text = label,

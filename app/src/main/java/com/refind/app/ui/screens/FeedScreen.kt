@@ -46,8 +46,8 @@ import com.refind.app.ui.components.ItemCard
 import com.refind.app.ui.components.NewReportBanner
 import com.refind.app.ui.components.StatusTabs
 import com.refind.app.ui.components.staggerIn
-import com.refind.app.ui.theme.Blue400
-import com.refind.app.ui.theme.Blue600
+import com.refind.app.ui.theme.BrandLight
+import com.refind.app.ui.theme.BrandPrimary
 
 /** Hero band height; the search card overlaps its bottom edge. */
 private val HeroBandHeight = 172.dp
@@ -130,7 +130,7 @@ private fun HeroBand(userName: String, modifier: Modifier = Modifier) {
             .height(HeroBandHeight)
             .statusBarsPadding()
             .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp))
-            .background(Brush.linearGradient(listOf(Blue600, Blue400))),
+            .background(Brush.linearGradient(listOf(BrandPrimary, BrandLight))),
     ) {
         Row(
             modifier = Modifier
