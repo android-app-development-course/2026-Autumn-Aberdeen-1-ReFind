@@ -184,6 +184,12 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                     val from = depthOf(initialState)
                     val to = depthOf(targetState)
                     when {
+                        // Login → Feed: the takeover already floods the screen
+                        // with brand colour and the feed header occupies the
+                        // same spot — just fade in, no movement at all.
+                        initialState == Screen.Login && targetState == Screen.Feed ->
+                            fadeIn(tween(240)) togetherWith fadeOut(tween(110))
+
                         // Report is a modal: it slides up while the page below
                         // dims and shrinks slightly in place (no sideways move).
                         targetState == Screen.Report ->

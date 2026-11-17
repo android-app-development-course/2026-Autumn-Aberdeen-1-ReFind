@@ -3,20 +3,20 @@
 
     <!-- Login -->
     <string name="login_welcome">欢迎回来 👋</string>
-    <string name="login_slogan">失而复得,自动完成。</string>
-    <string name="login_subtitle">登录 ReFind,我们替你持续寻找。</string>
+    <string name="login_slogan">失而复得,自动完成</string>
+    <string name="login_subtitle">登录 ReFind,我们替你持续寻找</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
     <string name="sign_in">登录</string>
     <string name="signing_in">登录中…</string>
-    <string name="login_disclaimer">原型版本 — 任意密码均可登录。报告仅保存在本机。</string>
+    <string name="login_disclaimer">原型版本,任意密码可登录,报告仅保存在本机</string>
 
     <!-- Feed -->
     <string name="feed_greeting">你好,%1$s 👋</string>
-    <string name="feed_subtitle">丢了东西?ReFind 已经开始寻找。</string>
+    <string name="feed_subtitle">丢了东西?ReFind 已开始为你寻找</string>
     <string name="search_hint">搜索失物与招领…</string>
     <string name="banner_report_title">发布一条报告</string>
-    <string name="banner_report_subtitle">丢了东西或捡到东西?几秒钟即可发布。</string>
+    <string name="banner_report_subtitle">丢了东西或捡到东西?几秒即可发布</string>
     <string name="tab_lost">丢失 (%1$d)</string>
     <string name="tab_found">拾获 (%1$d)</string>
 
@@ -25,11 +25,11 @@
     <string name="step_of">第 %1$d 步,共 %2$d 步</string>
     <string name="done">完成</string>
     <string name="what_happened">发生了什么?</string>
-    <string name="pick_kind">选择你要创建的报告类型。</string>
+    <string name="pick_kind">选择要创建的报告类型</string>
     <string name="lost_heading">我丢了东西</string>
-    <string name="lost_description">告诉 ReFind 你丢了什么 — 我们会持续关注新的拾获报告。</string>
+    <string name="lost_description">告诉我们你丢了什么,新的拾获报告会第一时间同步给你</string>
     <string name="found_heading">我捡到了东西</string>
-    <string name="found_description">发布报告,失主可通过私密验证问题认领。</string>
+    <string name="found_description">发布报告,失主需通过私密问题验证后认领</string>
     <string name="action_continue">继续</string>
     <string name="what_is_it">它是什么?</string>
     <string name="label_category">类别</string>
@@ -39,10 +39,10 @@
     <string name="camera">相机</string>
     <string name="gallery">相册</string>
     <string name="remove">移除</string>
-    <string name="photo_note">每份报告限一张照片。点“移除”可更换。</string>
+    <string name="photo_note">每份报告限一张照片,点「移除」可更换</string>
     <string name="item_photo">物品照片</string>
     <string name="label_colour">颜色</string>
-    <string name="label_where_when">在哪里 &amp; 什么时候?</string>
+    <string name="label_where_when">在哪里、什么时候?</string>
     <string name="label_last_seen">最后出现位置</string>
     <string name="label_when">时间</string>
     <string name="custom">自定义</string>
@@ -56,22 +56,22 @@
     <string name="pick_a_time">选择时间</string>
     <string name="action_next">下一步</string>
     <string name="action_cancel">取消</string>
-    <string name="action_set">设定</string>
+    <string name="action_set">确定</string>
     <string name="label_reward">悬赏(可选)</string>
     <string name="reward_none">无</string>
     <string name="reward_points">%1$d 积分</string>
     <string name="submit_report">提交报告</string>
     <string name="back_to_feed">返回首页</string>
     <string name="report_submitted">报告已提交!</string>
-    <string name="report_success_desc">附近的拾获者已收到通知。一旦出现匹配,我们会第一时间提醒你。</string>
+    <string name="report_success_desc">已通知附近的拾获者,一旦出现匹配会立刻提醒你</string>
 
     <!-- My Reports -->
     <string name="my_reports_title">我的报告</string>
-    <string name="my_reports_empty_lost">丢了东西?点 + 让 ReFind 帮你找。</string>
-    <string name="my_reports_empty_found">在校园里捡到东西?点 + 发布报告。</string>
+    <string name="my_reports_empty_lost">丢了东西?点 + 让 ReFind 帮你找</string>
+    <string name="my_reports_empty_found">在校园里捡到东西?点 + 发布报告</string>
     <string name="my_reports_empty_title">这里还什么都没有</string>
     <string name="my_reports_latest">最新:%1$s · %2$s</string>
-    <string name="my_reports_breakdown">丢失 %1$d · 拾获 %2$d — 点按查看全部</string>
+    <string name="my_reports_breakdown">丢失 %1$d · 拾获 %2$d,点按查看全部</string>
 
     <!-- Item detail -->
     <string name="action_back">返回</string>
@@ -80,7 +80,7 @@
     <string name="label_location">位置</string>
     <string name="label_reported">报告时间</string>
     <string name="potential_match">发现潜在匹配!</string>
-    <string name="potential_match_desc">附近有人报告了相似物品 — 快去看看。</string>
+    <string name="potential_match_desc">附近有人发布了相似物品,快去看看</string>
     <string name="open_match_chat">打开匹配对话</string>
     <string name="messages">消息</string>
 
@@ -94,7 +94,7 @@
     <string name="factor_colour">颜色</string>
     <string name="factor_location">位置</string>
     <string name="factor_time">时间</string>
-    <string name="matched_by_note">基于图像相似度、类别、颜色、位置和时间的综合匹配。</string>
+    <string name="matched_by_note">综合图像相似度、类别、颜色、位置与时间计算得出</string>
     <string name="start_verification_chat">开始验证对话</string>
     <string name="not_my_item">不是我的物品</string>
 
@@ -107,7 +107,7 @@
 
     <!-- Messages inbox -->
     <string name="messages_title">消息</string>
-    <string name="messages_subtitle">在这里验证匹配并安排安全交接。</string>
+    <string name="messages_subtitle">验证匹配,安排安全交接</string>
 
     <!-- Profile -->
     <string name="items_reunited">已帮找回 %1$d 件物品 🎉</string>
@@ -120,8 +120,8 @@
     <string name="about_refind">关于 ReFind</string>
     <string name="sign_out">退出登录</string>
     <string name="sign_out_title">退出登录?</string>
-    <string name="sign_out_desc">演示报告仅保存在内存中,退出后会消失。随时可以重新登录。</string>
-    <string name="about_body">失而复得,自动完成。ReFind 通过图像匹配配对丢失与拾获报告,并通过私密问题验证每一次认领。\n\n团队:Heng Liu · Honghui Zhang · Yuchen Huang</string>
+    <string name="sign_out_desc">演示数据仅保存在内存中,退出后将清空,随时可重新登录</string>
+    <string name="about_body">失而复得,自动完成。ReFind 通过图像匹配配对丢失与拾获报告,并以私密问题验证每一次认领。\n\n团队:Heng Liu · Honghui Zhang · Yuchen Huang</string>
     <string name="action_close">关闭</string>
     <string name="language">语言</string>
     <string name="language_english">English</string>

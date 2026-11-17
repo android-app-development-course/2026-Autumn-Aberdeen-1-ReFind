@@ -4,21 +4,29 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Magnifier lens -->
+    <!-- 放大镜手柄(旋转 45°) -->
+    <group
+        android:rotation="45"
+        android:pivotX="43.5"
+        android:pivotY="58.5">
+        <path
+            android:fillColor="#025E63"
+            android:pathData="M43.5,58.5 h7.2 v19 h-7.2 z" />
+    </group>
+    <!-- 深青外框 -->
     <path
-        android:fillColor="#00000000"
-        android:pathData="M45,45 m-17,0 a17,17 0 1 1 34,0 a17,17 0 1 1 -34,0"
-        android:strokeWidth="8"
-        android:strokeColor="#FFFFFF" />
-    <!-- Highlight dot inside the lens: the found item -->
+        android:fillColor="#025E63"
+        android:pathData="M57,49 m-18,0 a18,18 0 1,1 36,0 a18,18 0 1,1 -36,0" />
+    <!-- 镜片高光环 -->
     <path
-        android:fillColor="#7FD1D4"
-        android:pathData="M45,45 m-7,0 a7,7 0 1 1 14,0 a7,7 0 1 1 -14,0" />
-    <!-- Handle -->
+        android:fillColor="#EEF3F6"
+        android:pathData="M57,49 m-14.5,0 a14.5,14.5 0 1,1 29,0 a14.5,14.5 0 1,1 -29,0" />
+    <!-- 镜片白底 -->
     <path
-        android:fillColor="#00000000"
-        android:pathData="M57.5,57.5 L70,70"
-        android:strokeWidth="9"
-        android:strokeColor="#FFFFFF"
-        android:strokeLineCap="round" />
+        android:fillColor="#FFFFFF"
+        android:pathData="M57,49 m-12.5,0 a12.5,12.5 0 1,1 25,0 a12.5,12.5 0 1,1 -25,0" />
+    <!-- 橙色左转弯箭头 -->
+    <path
+        android:fillColor="#FF7A00"
+        android:pathData="M65.0,55.5 V50.8 C65.0,47.8 62.6,45.4 59.6,45.4 H55.4 V42.3 C55.4,41.4 54.3,40.9 53.6,41.5 L49.3,45.7 C48.8,46.2 48.8,47.0 49.3,47.5 L53.6,51.7 C54.3,52.3 55.4,51.8 55.4,50.9 V48.6 H59.4 C60.7,48.6 61.8,49.7 61.8,51.0 V55.5 C61.8,56.4 62.5,57.1 63.4,57.1 C64.3,57.1 65.0,56.4 65.0,55.5 Z" />
 </vector>
