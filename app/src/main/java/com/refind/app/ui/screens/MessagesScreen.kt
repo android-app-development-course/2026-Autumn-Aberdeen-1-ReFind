@@ -100,14 +100,31 @@ private fun ConversationRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box {
-            Image(
-                painter = painterResource(R.drawable.avatar_default),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(54.dp)
-                    .clip(CircleShape),
-            )
+            if (conversation.useAppIcon) {
+                // Official system chat: the app icon on the brand container.
+                Box(
+                    modifier = Modifier
+                        .size(54.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp),
+                    )
+                }
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.avatar_default),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(54.dp)
+                        .clip(CircleShape),
+                )
+            }
             if (conversation.unread) {
                 Box(
                     modifier = Modifier

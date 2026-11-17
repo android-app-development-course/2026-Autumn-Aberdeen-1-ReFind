@@ -306,6 +306,7 @@ fun ReFindApp(modifier: Modifier = Modifier) {
                         peerName = activeConversation.peerName,
                         peerSubtitle = activeConversation.peerRole,
                         peerOnline = activeConversation.peerOnline,
+                        useAppIcon = activeConversation.useAppIcon,
                         onBack = { screen = chatOrigin },
                     )
 

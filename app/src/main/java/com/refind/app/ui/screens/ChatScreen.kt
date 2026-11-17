@@ -70,6 +70,7 @@ fun ChatScreen(
     peerName: String,
     peerSubtitle: String,
     peerOnline: Boolean,
+    useAppIcon: Boolean = false,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -100,14 +101,30 @@ fun ChatScreen(
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
-            Image(
-                painter = painterResource(R.drawable.avatar_default),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(42.dp)
-                    .clip(CircleShape),
-            )
+            if (useAppIcon) {
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                    )
+                }
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.avatar_default),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape),
+                )
+            }
             Spacer(Modifier.width(12.dp))
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {

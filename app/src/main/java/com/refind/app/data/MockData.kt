@@ -211,6 +211,7 @@ object DemoData {
             preview = "Good news! Your lost wallet received a new potential match…",
             time = "08:30",
             unread = true,
+            useAppIcon = true,
         ),
     )
 }
@@ -226,4 +227,6 @@ data class Conversation(
     val preview: String,
     val time: String,
     val unread: Boolean,
+    /** Official/system chats show the ReFind app icon instead of an avatar. */
+    val useAppIcon: Boolean = false,
 )

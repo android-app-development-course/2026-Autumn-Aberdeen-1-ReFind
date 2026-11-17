@@ -108,6 +108,7 @@ fun MyReportsScreen(
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     text = if (selectedTab == ItemStatus.FOUND) {
                         tr(R.string.my_reports_empty_found)
                     } else {
