@@ -5,8 +5,6 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Row
+import com.refind.app.ui.AppLanguage
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -49,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -111,14 +111,8 @@ fun LoginScreen(
                     .padding(horizontal = 20.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.End,
             ) {
-                LanguagePill(onToggle = {
-                    val tags = androidx.appcompat.app.AppCompatDelegate
-                        .getApplicationLocales().toLanguageTags()
-                    val next = if (tags.startsWith("zh")) "en" else "zh"
-                    androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(
-                        androidx.core.os.LocaleListCompat.forLanguageTags(next),
-                    )
-                })
+                val context = LocalContext.current
+                LanguagePill(onToggle = { AppLanguage.toggle(context) })
             }
             Column(
                 modifier = Modifier
@@ -237,8 +231,7 @@ fun LoginScreen(
  */
 @Composable
 private fun LanguagePill(onToggle: () -> Unit, modifier: Modifier = Modifier) {
-    val tags = AppCompatDelegate.getApplicationLocales().toLanguageTags()
-    val label = if (tags.startsWith("zh")) "中文" else "EN"
+    val label = if (AppLanguage.current == "zh") "中文" else "EN"
     Surface(
         onClick = onToggle,
         shape = RoundedCornerShape(14.dp),

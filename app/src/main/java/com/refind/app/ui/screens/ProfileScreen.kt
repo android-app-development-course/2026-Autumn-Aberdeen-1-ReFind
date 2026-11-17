@@ -55,14 +55,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.unit.dp
-import androidx.core.os.LocaleListCompat
 import com.refind.app.AppInfo
 import com.refind.app.R
 import com.refind.app.ui.tr
 import com.refind.app.data.DemoData
 import com.refind.app.data.ItemStatus
+import com.refind.app.ui.AppLanguage
 import com.refind.app.data.ItemReport
 import com.refind.app.ui.components.categoryIcon
 import com.refind.app.ui.theme.Blue100
@@ -82,10 +81,10 @@ fun ProfileScreen(
     var showSignOutDialog by remember { mutableStateOf(false) }
     var showAboutDialog by remember { mutableStateOf(false) }
     var showLanguageDialog by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
-    // Which language the app is currently showing (per-app locale).
-    val currentTags = AppCompatDelegate.getApplicationLocales().toLanguageTags()
-    val languageLabel = if (currentTags.startsWith("zh")) "中文" else "English"
+    // Which language the app is currently showing (in-app state, no recreation).
+    val languageLabel = if (AppLanguage.current == "zh") "中文" else "English"
 
     Column(
         modifier = modifier
@@ -249,9 +248,7 @@ fun ProfileScreen(
                         TextButton(
                             onClick = {
                                 showLanguageDialog = false
-                                AppCompatDelegate.setApplicationLocales(
-                                    LocaleListCompat.forLanguageTags("en"),
-                                )
+                                AppLanguage.set(context, "en")
                             },
                             modifier = Modifier.fillMaxWidth(),
                         ) {
@@ -264,9 +261,7 @@ fun ProfileScreen(
                         TextButton(
                             onClick = {
                                 showLanguageDialog = false
-                                AppCompatDelegate.setApplicationLocales(
-                                    LocaleListCompat.forLanguageTags("zh"),
-                                )
+                                AppLanguage.set(context, "zh")
                             },
                             modifier = Modifier.fillMaxWidth(),
                         ) {

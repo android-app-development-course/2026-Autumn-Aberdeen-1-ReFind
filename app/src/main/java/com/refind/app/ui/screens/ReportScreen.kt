@@ -479,13 +479,24 @@ private fun ItemStep(
                     .clip(RoundedCornerShape(12.dp))
                     .background(
                         if (isSelected) {
-                            MaterialTheme.colorScheme.primaryContainer
+                            MaterialTheme.colorScheme.surface
                         } else {
                             MaterialTheme.colorScheme.surfaceVariant
                         },
                     )
+                    .then(
+                        if (isSelected) {
+                            Modifier.border(
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                        } else {
+                            Modifier
+                        },
+                    )
                     .clickable { onColour(name) }
-                    .padding(horizontal = 12.dp, vertical = 7.dp),
+                    .padding(horizontal = 11.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
@@ -504,7 +515,7 @@ private fun ItemStep(
                     text = name,
                     style = MaterialTheme.typography.labelLarge,
                     color = if (isSelected) {
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        MaterialTheme.colorScheme.primary
                     } else {
                         MaterialTheme.colorScheme.onSurfaceVariant
                     },
