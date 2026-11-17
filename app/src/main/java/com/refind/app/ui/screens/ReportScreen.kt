@@ -203,10 +203,7 @@ fun ReportScreen(
                         timeAgo = timeAgo,
                         onTime = { timeAgo = it },
                         customTimeText = customTimeText,
-                        onCustomTime = {
-                            customTimeText = it
-                            timeAgo = it
-                        },
+                        onCustomTime = { customTimeText = it },
                         reward = reward,
                         onReward = { reward = it },
                     )
@@ -686,6 +683,7 @@ private fun WhereWhenStep(
                             java.util.Locale.ENGLISH,
                         ).format(calendar.time)
                         onCustomTime(text)
+                        onTime(text)
                         showTimePicker = false
                     },
                 ) { Text(tr(R.string.action_set)) }

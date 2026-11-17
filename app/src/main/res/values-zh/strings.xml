@@ -8,6 +8,7 @@
     <string name="username">用户名</string>
     <string name="password">密码</string>
     <string name="sign_in">登录</string>
+    <string name="signing_in">登录中…</string>
     <string name="login_disclaimer">原型版本 — 任意密码均可登录。报告仅保存在本机。</string>
 
     <!-- Feed -->

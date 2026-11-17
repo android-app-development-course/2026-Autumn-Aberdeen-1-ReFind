@@ -8,6 +8,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="sign_in">Sign in</string>
+    <string name="signing_in">Signing in…</string>
     <string name="login_disclaimer">Prototype build — any password works. Reports are stored on-device only.</string>
 
     <!-- Feed -->
