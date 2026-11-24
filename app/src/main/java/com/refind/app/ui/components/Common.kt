@@ -14,14 +14,17 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
@@ -48,9 +51,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -61,6 +66,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.refind.app.R
 import com.refind.app.ui.tr
@@ -71,6 +77,7 @@ import com.refind.app.ui.theme.WarningAmber
 import com.refind.app.ui.theme.WarningAmberContainer
 import com.refind.app.ui.theme.BrandContainer
 import com.refind.app.ui.theme.BrandBright
+import com.refind.app.ui.theme.BrandLight
 import com.refind.app.ui.theme.BrandPrimary
 import com.refind.app.ui.theme.BrandInk
 import kotlinx.coroutines.delay
@@ -86,6 +93,14 @@ fun categoryIcon(category: Category): ImageVector = when (category) {
     Category.BAG -> Icons.Outlined.ShoppingBag
     Category.OTHER -> Icons.Outlined.Category
 }
+
+/**
+ * Whether the current screen should play its entrance choreography. Provided
+ * once per navigation target by the root AnimatedContent; entrance helpers
+ * like [staggerIn] read it, so returning to a level never replays anything
+ * and new screens inherit the behaviour without wiring a single parameter.
+ */
+val LocalAnimateIn = staticCompositionLocalOf { true }
 
 /** Press feedback: scale the card down slightly with a spring while pressed. */
 fun Modifier.pressScale(
@@ -106,16 +121,62 @@ fun Modifier.pressScale(
 
 /** Delayed fade + slide-up entrance used for staggered lists. */
 fun Modifier.staggerIn(index: Int, stepMs: Long = 70L): Modifier = composed {
-    val alpha = remember { Animatable(0f) }
-    val offset = remember { Animatable(1f) }
+    // The root provides this per navigation target: true on first visit,
+    // false whenever the screen is being returned to.
+    val animateIn = LocalAnimateIn.current
+    val alpha = remember { Animatable(if (animateIn) 0f else 1f) }
+    val offset = remember { Animatable(if (animateIn) 1f else 0f) }
     LaunchedEffect(Unit) {
-        delay(index * stepMs)
+        if (!animateIn) return@LaunchedEffect
+        // Cap the per-row delay: long lists must not push the last row's
+        // entrance seconds into the future.
+        delay(minOf(index, 8) * stepMs)
         launch { alpha.animateTo(1f, tween(320)) }
         offset.animateTo(0f, tween(380, easing = FastOutSlowInEasing))
     }
     this.graphicsLayer {
         this.alpha = alpha.value
         translationY = 26f * offset.value
+    }
+}
+
+/**
+ * Shared brand header band: teal gradient with rounded bottom corners, soft
+ * decorative circles, sized to include the status bar. Every tab header uses
+ * it so the bands stay identical in height, corner radius and decoration.
+ */
+@Composable
+fun BrandHeaderBand(
+    modifier: Modifier = Modifier,
+    height: Dp = 172.dp,
+    content: @Composable BoxScope.() -> Unit = {},
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height)
+            .statusBarsPadding()
+            .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp))
+            .background(Brush.linearGradient(listOf(BrandPrimary, BrandLight))),
+    ) {
+        // Decorative circles bleeding off the band corners; clipped by the band.
+        Box(
+            Modifier
+                .align(Alignment.BottomEnd)
+                .offset(x = 64.dp, y = 84.dp)
+                .size(190.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.10f)),
+        )
+        Box(
+            Modifier
+                .align(Alignment.TopStart)
+                .offset(x = (-26).dp, y = (-30).dp)
+                .size(90.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.09f)),
+        )
+        content()
     }
 }
 
@@ -156,7 +217,6 @@ fun ItemCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     index: Int = 0,
-    animateIn: Boolean = true,
     isMine: Boolean = false,
 ) {
     val interaction = remember { MutableInteractionSource() }
@@ -173,7 +233,7 @@ fun ItemCard(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .let { if (animateIn) it.staggerIn(index) else it }
+            .staggerIn(index)
             .pressScale(interaction),
         interactionSource = interaction,
         shape = RoundedCornerShape(20.dp),

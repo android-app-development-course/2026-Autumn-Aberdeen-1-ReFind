@@ -12,14 +12,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChatBubble
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,14 +37,16 @@ import androidx.compose.ui.unit.dp
 import com.refind.app.R
 import com.refind.app.ui.tr
 import com.refind.app.data.Conversation
-import com.refind.app.ui.components.ItemCard
-import com.refind.app.ui.components.MineChip
+import com.refind.app.ui.components.BrandHeaderBand
 import com.refind.app.ui.components.StatusBadge
 import com.refind.app.ui.components.staggerIn
+import com.refind.app.ui.theme.BrandPrimary
 
 /**
- * Inbox of chat threads. Each row opens the verification chat; the item
- * the conversation is about is echoed with its own mini card.
+ * Inbox of chat threads. A brand header band echoes the feed hero; each row
+ * opens the verification chat, and the item the conversation is about is
+ * echoed with its own mini card. A soft brand watermark fills the space
+ * below short lists instead of leaving bare background.
  */
 @Composable
 fun MessagesScreen(
@@ -51,28 +56,42 @@ fun MessagesScreen(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
+            .fillMaxSize(),
     ) {
-        Text(
-            text = tr(R.string.messages_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(start = 20.dp, top = 16.dp),
-        )
-        Text(
-            text = tr(R.string.messages_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 20.dp, top = 4.dp),
-        )
-        Spacer(Modifier.height(10.dp))
+        BrandHeaderBand {
+            Column(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 18.dp),
+            ) {
+                Text(
+                    text = tr(R.string.messages_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White,
+                )
+                Text(
+                    text = tr(R.string.messages_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.85f),
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+            }
+            // Oversized ghosted chat bubble fills the band below the subtitle.
+            Icon(
+                Icons.Outlined.ChatBubble,
+                contentDescription = null,
+                tint = Color.White.copy(alpha = 0.16f),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = 22.dp, y = 26.dp)
+                    .size(118.dp),
+            )
+        }
 
         LazyColumn(
             contentPadding = PaddingValues(
-                start = 20.dp, end = 20.dp, top = 6.dp, bottom = 120.dp,
+                start = 20.dp, end = 20.dp, top = 14.dp, bottom = 120.dp,
             ),
             verticalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.fillMaxSize(),
         ) {
             itemsIndexed(conversations, key = { _, c -> c.id }) { index, conv ->
                 ConversationRow(
@@ -81,7 +100,42 @@ fun MessagesScreen(
                     modifier = Modifier.staggerIn(index),
                 )
             }
+            item(key = "brand-foot") {
+                BrandFootprint()
+            }
         }
+    }
+}
+
+/** Soft brand watermark shown under the conversation list. */
+@Composable
+private fun BrandFootprint() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 22.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(58.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                tint = BrandPrimary,
+                modifier = Modifier.size(36.dp),
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "ReFind",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
+        )
     }
 }
 

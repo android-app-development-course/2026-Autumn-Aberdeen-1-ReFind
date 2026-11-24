@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -33,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -42,15 +40,11 @@ import com.refind.app.ui.tr
 import androidx.compose.ui.unit.dp
 import com.refind.app.data.ItemReport
 import com.refind.app.data.ItemStatus
+import com.refind.app.ui.components.BrandHeaderBand
 import com.refind.app.ui.components.ItemCard
 import com.refind.app.ui.components.NewReportBanner
 import com.refind.app.ui.components.StatusTabs
 import com.refind.app.ui.components.staggerIn
-import com.refind.app.ui.theme.BrandLight
-import com.refind.app.ui.theme.BrandPrimary
-
-/** Hero band height; the search card overlaps its bottom edge. */
-private val HeroBandHeight = 172.dp
 
 /**
  * Home feed: a teal hero band carries the greeting, the white search card
@@ -78,7 +72,45 @@ fun FeedScreen(
             // The hero band scrolls with the content; the search card hangs
             // over its bottom edge by 26dp (extra spacing added to the banner).
             Box {
-                HeroBand(userName = userName)
+                BrandHeaderBand {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp, top = 18.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                text = tr(R.string.feed_greeting, userName),
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = Color.White,
+                            )
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                text = tr(R.string.feed_subtitle),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.85f),
+                            )
+                        }
+                        Spacer(Modifier.width(14.dp))
+                        // Round avatar with a white ring, echoing the reference layout.
+                        Box(
+                            modifier = Modifier
+                                .size(52.dp)
+                                .clip(CircleShape)
+                                .background(Color.White)
+                                .padding(2.dp)
+                                .clip(CircleShape),
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.avatar_default),
+                                contentDescription = "Avatar",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+                    }
+                }
                 SearchCard(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
@@ -117,58 +149,6 @@ fun FeedScreen(
                 index = index + 2,
                 isMine = item.reporter == userName,
             )
-        }
-    }
-}
-
-/** Blue gradient band with the greeting and a soft decorative circle. */
-@Composable
-private fun HeroBand(userName: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(HeroBandHeight)
-            .statusBarsPadding()
-            .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp))
-            .background(Brush.linearGradient(listOf(BrandPrimary, BrandLight))),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(start = 20.dp, end = 20.dp, top = 18.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(Modifier.weight(1f)) {
-                Text(
-                    text = tr(R.string.feed_greeting, userName),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
-                )
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = tr(R.string.feed_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White.copy(alpha = 0.85f),
-                )
-            }
-            Spacer(Modifier.width(14.dp))
-            // Round avatar with a white ring, echoing the reference layout.
-            Box(
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(CircleShape)
-                    .background(Color.White)
-                    .padding(2.dp)
-                    .clip(CircleShape),
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.avatar_default),
-                    contentDescription = "Avatar",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
         }
     }
 }

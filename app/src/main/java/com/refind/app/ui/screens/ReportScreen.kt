@@ -1,5 +1,6 @@
 package com.refind.app.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -104,6 +105,9 @@ fun ReportScreen(
     modifier: Modifier = Modifier,
 ) {
     var step by rememberSaveable { mutableIntStateOf(0) }
+    // System back steps through the wizard (type -> item -> where&when)
+    // before falling through to the root handler, which closes the modal.
+    BackHandler(enabled = step in 1..2) { step -= 1 }
     var status by rememberSaveable { mutableStateOf(ItemStatus.LOST) }
     var category by remember { mutableStateOf<Category?>(null) }
     var title by rememberSaveable { mutableStateOf("") }

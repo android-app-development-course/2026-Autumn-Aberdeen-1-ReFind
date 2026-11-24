@@ -163,7 +163,10 @@ fun ItemDetailScreen(
                     item.category.label,
                 ),
             )
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.staggerIn(0)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.staggerIn(0),
+            ) {
                 facts.chunked(2).forEach { row ->
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         row.forEach { (icon, label, value) ->

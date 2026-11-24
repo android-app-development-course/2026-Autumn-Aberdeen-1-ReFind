@@ -63,6 +63,7 @@ import com.refind.app.data.DemoData
 import com.refind.app.data.ItemStatus
 import com.refind.app.ui.AppLanguage
 import com.refind.app.data.ItemReport
+import com.refind.app.ui.components.LocalAnimateIn
 import com.refind.app.ui.components.categoryIcon
 import com.refind.app.ui.theme.BrandContainer
 import com.refind.app.ui.theme.BrandPrimary
@@ -334,14 +335,17 @@ fun ProfileScreen(
     }
 }
 
-/** Number counts up from zero when the screen opens. */
+/** Number counts up on first visit; on return the root says animateIn=false. */
 @Composable
-private fun StatCard(    value: Int,
+private fun StatCard(
+    value: Int,
     label: String,
     modifier: Modifier = Modifier,
 ) {
-    val anim = remember { Animatable(0f) }
+    val animateIn = LocalAnimateIn.current
+    val anim = remember { Animatable(if (animateIn) 0f else 1f) }
     LaunchedEffect(Unit) {
+        if (!animateIn) return@LaunchedEffect
         anim.animateTo(1f, tween(850, easing = FastOutSlowInEasing))
     }
     Card(
